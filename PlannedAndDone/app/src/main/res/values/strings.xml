@@ -1,8 +1,15 @@
 <resources>
-    <string name="app_name">PlannedAndDone</string>
+    <string name="app_name">Planned&amp;Done</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <!-- u optionsMenu-->
+    <string name="action_pomodoro">Pomodoro</string>
+    <string name="action_calendar">Calendar</string>
+    <string name="action_notifications">Notifications</string>
+    <string name="action_style">Style</string>
+    <string name="action_deleteCompleted">Delete completed tasks</string>
+    <string name="action_category">Update category</string>
+
 </resources>
