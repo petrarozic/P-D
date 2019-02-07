@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class DBAdapter {
     static final String TASK_ID = "_id";
     static final String TASK_NAME = "name";
@@ -76,14 +79,14 @@ public class DBAdapter {
         }
     }
 
-    //---opens the database---
+    //otvori bazu
     public DBAdapter open() throws SQLException
     {
         db = DBHelper.getWritableDatabase();
         return this;
     }
 
-    //---closes the database---
+    //zatvori bazu
     public void close()
     {
         DBHelper.close();
@@ -130,7 +133,7 @@ public class DBAdapter {
     public Cursor getAllTasks()
     {
         return db.query(TASK_TABLE, new String[] {TASK_ID, TASK_NAME,
-                TASK_TIME, TASK_DEADLINE, TASK_PRIORITY, TASK_DONE}, null, null, null, null, null);
+                TASK_TIME, TASK_DEADLINE, TASK_PRIORITY,TASK_CATEGORY, TASK_DONE}, null, null, null, null, null);
     }
 
     //dohvati sve kategorije
@@ -144,7 +147,7 @@ public class DBAdapter {
     {
         Cursor mCursor =
                 db.query(true, TASK_TABLE, new String[] {TASK_ID, TASK_NAME,
-                                TASK_TIME, TASK_DEADLINE, TASK_PRIORITY, TASK_DONE}, TASK_ID + "=" + rowId, null,
+                                TASK_TIME, TASK_DEADLINE, TASK_PRIORITY,TASK_CATEGORY, TASK_DONE}, TASK_ID + "=" + rowId, null,
                         null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -178,5 +181,107 @@ public class DBAdapter {
     }
 
 
+    //FILTRI
+
+    //po kategorijama
+    public Cursor filterTaskByCategory(long idCategory){
+        Cursor mCursor =
+                db.query(true, TASK_TABLE, new String[] {TASK_ID, TASK_NAME,
+                                TASK_TIME, TASK_DEADLINE, TASK_PRIORITY,TASK_CATEGORY, TASK_DONE}, TASK_CATEGORY + "=" + idCategory, null,
+                        null, null, null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
+
+    //po prioritetima
+    public Cursor filterTaskByPriority(int priority){
+        Cursor mCursor =
+                db.query(true, TASK_TABLE, new String[] {TASK_ID, TASK_NAME,
+                                TASK_TIME, TASK_DEADLINE, TASK_PRIORITY,TASK_CATEGORY, TASK_DONE}, TASK_PRIORITY + "=" + priority, null,
+                        null, null, null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
+
+
+    //po stanju
+    public Cursor filterTaskByState(int done){
+        Cursor mCursor =
+                db.query(true, TASK_TABLE, new String[] {TASK_ID, TASK_NAME,
+                                TASK_TIME, TASK_DEADLINE, TASK_PRIORITY,TASK_CATEGORY, TASK_DONE}, TASK_DONE + "=" + done, null,
+                        null, null, null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
+
+    //po deadlineu
+    public Cursor filterTaskByDeadline(int time){
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+        Cursor mCursor;
+        String filter;
+
+        //filter -> cijeli datum, mjesec i godina, godina
+        switch(time){
+            case 1:
+                filter = timeStamp;
+                break;
+            case 2:
+                filter = timeStamp.substring(0,5);
+                break;
+            case 3:
+                filter = timeStamp.substring(0,3);
+                break;
+            default:
+                filter = timeStamp;
+        }
+
+        mCursor =  db.query(true, TASK_TABLE, new String[] {TASK_ID, TASK_NAME,
+                                TASK_TIME, TASK_DEADLINE, TASK_PRIORITY,TASK_CATEGORY, TASK_DONE}, "where "+ TASK_DEADLINE+" like '"+ filter+"%'" , null,
+                        null, null, null, null);
+
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
+
+    //po zadanom terminu
+    public Cursor filterTaskByTime(int time){
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+        Cursor mCursor;
+        String filter;
+
+        //filter -> cijeli datum, mjesec i godina, godina
+        switch(time){
+            case 1:
+                filter = timeStamp;
+                break;
+            case 2:
+                filter = timeStamp.substring(0,5);
+                break;
+            case 3:
+                filter = timeStamp.substring(0,3);
+                break;
+            default:
+                filter = timeStamp;
+        }
+
+        mCursor =  db.query(true, TASK_TABLE, new String[] {TASK_ID, TASK_NAME,
+                        TASK_TIME, TASK_DEADLINE, TASK_PRIORITY,TASK_CATEGORY, TASK_DONE}, "where "+ TASK_TIME+" like '"+ filter+"%'" , null,
+                null, null, null, null);
+
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
 }
 
