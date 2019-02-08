@@ -19,7 +19,8 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="25dp"
         android:layout_marginRight="87dp"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:onClick="SortBy"/>
 
     <Button
         android:id="@+id/button"
@@ -32,6 +33,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/button2"
         android:layout_marginRight="8dp"
-        app:layout_constraintHorizontal_bias="0.861" />
+        app:layout_constraintHorizontal_bias="0.861"
+        android:onClick="FilterBy"/>
 </android.support.constraint.ConstraintLayout>
 </LinearLayout>
