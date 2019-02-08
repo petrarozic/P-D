@@ -14,5 +14,8 @@
     <string name="mytasks">My tasks</string>
     <string name="planned">Planned</string>
     <string name="done">Done</string>
+    <string name="addcategory">Add category</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

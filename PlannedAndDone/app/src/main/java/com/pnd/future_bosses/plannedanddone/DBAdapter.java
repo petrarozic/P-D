@@ -9,10 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class DBAdapter {
+public class DBAdapter implements Serializable{
     static final String TASK_ID = "_id";
     static final String TASK_NAME = "name";
     static final String TASK_TIME = "time";
@@ -28,16 +29,15 @@ public class DBAdapter {
 
 
 
-    static final String DATABASE_CREATE =
+    static final String TASK_CREATE =
             "create table tasks (_id integer primary key autoincrement, "
-                    + "name text not null, time text, deadline text, priority integer, category integer, done integer);"
-                    + "create table categories (_id integer primary key autoincrement, "
-                    + "name text not null);";
+                    + "name text not null, time text, deadline text, priority integer, category integer, done integer);";
+    static final String CATEGORY_CREATE ="create table categories (_id integer primary key autoincrement, "
+            + "name text not null);";
 
     static final String TAG = "DBAdapter";
     static final String DATABASE_NAME = "PD_DB";
-    static final int DATABASE_VERSION = 7;
-
+    static final int DATABASE_VERSION = 1;
 
 
     final Context context;
@@ -62,7 +62,8 @@ public class DBAdapter {
         public void onCreate(SQLiteDatabase db)
         {
             try {
-                db.execSQL(DATABASE_CREATE);
+                db.execSQL(TASK_CREATE);
+                db.execSQL(CATEGORY_CREATE);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

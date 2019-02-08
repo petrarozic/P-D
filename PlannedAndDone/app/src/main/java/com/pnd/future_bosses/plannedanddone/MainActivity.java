@@ -2,6 +2,7 @@ package com.pnd.future_bosses.plannedanddone;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 public class MainActivity extends AppCompatActivity
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         db = new DBAdapter(this);
 
+
         //---add a contact---
         db.open();
         long id = db.insertTask("Šetnja psa", "12.3.2019.", "hhh", 1, 3, 1);
@@ -81,7 +84,6 @@ public class MainActivity extends AppCompatActivity
             } while (cu.moveToNext());
         }
         db.close();
-
 
     }
 
@@ -234,12 +236,25 @@ public class MainActivity extends AppCompatActivity
     {
         Toast.makeText(this,
                 "id: " + c.getString(0) + "\n" +
+
                         "Name: " + c.getString(1) + "\n" +
                         "time:  " + c.getString(2) + "\n" +
                         "deadline: " + c.getString(3) + "\n" +
                         "category: " + c.getString(4) + "\n" +
                         "priority  " + c.getString(5),
+                        "Name: " + c.getString(1) + "\n" ,
+                        //"time:  " + c.getString(2),
                 Toast.LENGTH_LONG).show();
+    }
+
+    //uredi kategorije
+    public void updateCategoryClick(MenuItem item) {
+        Intent i = new Intent(MainActivity.this, EditCategories.class);
+        Bundle b = new Bundle();
+        b.putSerializable("EXTRA_MESSAGE",db);
+        i.putExtras(b);
+        //i.putExtra(&quot;DBAdapterObject&quot;, db);
+        startActivity(i);
     }
 }
 
