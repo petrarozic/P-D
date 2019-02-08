@@ -1,8 +1,10 @@
 package com.pnd.future_bosses.plannedanddone;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -18,9 +20,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+
+
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    DBAdapter db;
+
+
+    public DBAdapter db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,22 +56,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         db = new DBAdapter(this);
 
-        //---add a contact---
-        db.open();
-        long id = db.insertTask("Wei-Meng Lee", "wei", "hhh", 2, 3, 1);
-        id = db.insertTask("Mary Jackson", "wcdsgei", "hhsdfh", 2, 4, 0);
-
-
-        Cursor cu = db.getAllTasks();
-
-
-        if (cu.moveToFirst())
-        {
-            do {
-                DisplayContact(cu);
-            } while (cu.moveToNext());
-        }
-        db.close();
 
 
     }
@@ -165,8 +156,18 @@ public class MainActivity extends AppCompatActivity
     {
         Toast.makeText(this,
                 "id: " + c.getString(0) + "\n" +
-                        "Name: " + c.getString(1) + "\n" +
-                        "time:  " + c.getString(2),
+                        "Name: " + c.getString(1) + "\n" ,
+                        //"time:  " + c.getString(2),
                 Toast.LENGTH_LONG).show();
+    }
+
+    //uredi kategorije
+    public void updateCategoryClick(MenuItem item) {
+        Intent i = new Intent(MainActivity.this, EditCategories.class);
+        Bundle b = new Bundle();
+        b.putSerializable("EXTRA_MESSAGE",db);
+        i.putExtras(b);
+        //i.putExtra(&quot;DBAdapterObject&quot;, db);
+        startActivity(i);
     }
 }
