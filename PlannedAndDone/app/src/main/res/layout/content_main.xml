@@ -26,14 +26,14 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Filter"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="25dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="25dp"
+        android:onClick="FilterBy"
+        android:text="Filter"
+        app:layout_constraintHorizontal_bias="0.861"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/button2"
-        android:layout_marginRight="8dp"
-        app:layout_constraintHorizontal_bias="0.861"
-        android:onClick="FilterBy"/>
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
 </LinearLayout>

@@ -11,5 +11,11 @@
     <string name="action_style">Style</string>
     <string name="action_deleteCompleted">Delete completed tasks</string>
     <string name="action_category">Update category</string>
+    <string name="category_of_task">Category of task:</string>
+    <string name="priority_of_task">Priority of task:</string>
+    <string name="i_plan_to_finish_task_by">I plan to finish task by:</string>
+    <string name="deadline_for_task_is">Deadline for task is:</string>
+    <string name="optional">optional:</string>
+    <string name="my_task_is">My task is:</string>
 
 </resources>
