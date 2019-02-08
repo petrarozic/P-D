@@ -1,8 +1,11 @@
 package com.pnd.future_bosses.plannedanddone;
 
+import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -13,12 +16,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    DBAdapter db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -41,6 +47,26 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        db = new DBAdapter(this);
+
+        //---add a contact---
+        db.open();
+        long id = db.insertTask("Wei-Meng Lee", "wei", "hhh", 2, 3, 1);
+        id = db.insertTask("Mary Jackson", "wcdsgei", "hhsdfh", 2, 4, 0);
+
+
+        Cursor cu = db.getAllTasks();
+
+
+        if (cu.moveToFirst())
+        {
+            do {
+                DisplayContact(cu);
+            } while (cu.moveToNext());
+        }
+        db.close();
+
+
     }
 
 
@@ -114,4 +140,33 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void deleteAllDone(MenuItem item) {
+        new AlertDialog.Builder(this)
+                .setTitle("Title")
+                .setMessage("Do you really want to delete all completed tasks?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        db.open();
+                        db.deleteAllCopmletedTasks();
+                        db.close();
+                        Toast.makeText(MainActivity.this, "Completed tasks have ben deleted successfully!", Toast.LENGTH_SHORT).show();
+                    }})
+                .setNegativeButton(android.R.string.no, null).show();
+    }
+
+
+
+// nakon onCreate
+
+    //funkcija za ispis
+    public void DisplayContact(Cursor c)
+    {
+        Toast.makeText(this,
+                "id: " + c.getString(0) + "\n" +
+                        "Name: " + c.getString(1) + "\n" +
+                        "time:  " + c.getString(2),
+                Toast.LENGTH_LONG).show();
+    }
 }
