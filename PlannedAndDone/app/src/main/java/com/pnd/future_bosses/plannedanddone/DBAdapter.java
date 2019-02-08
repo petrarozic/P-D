@@ -29,14 +29,14 @@ public class DBAdapter {
 
 
     static final String DATABASE_CREATE =
-            "create /home/student1/perozic/Desktop/Planned&Donetable tasks (_id integer primary key autoincrement, "
+            "create table tasks (_id integer primary key autoincrement, "
                     + "name text not null, time text, deadline text, priority integer, category integer, done integer);"
                     + "create table categories (_id integer primary key autoincrement, "
                     + "name text not null);";
 
     static final String TAG = "DBAdapter";
     static final String DATABASE_NAME = "PD_DB";
-    static final int DATABASE_VERSION = 1;
+    static final int DATABASE_VERSION = 5;
 
 
 
@@ -282,6 +282,12 @@ public class DBAdapter {
             mCursor.moveToFirst();
         }
         return mCursor;
+    }
+
+    //obriši sve gotove zadatke
+    public boolean deleteAllCopmletedTasks(){
+        //return true;
+        return db.delete(TASK_TABLE, TASK_DONE + "= 1", null) > 0;
     }
 }
 
