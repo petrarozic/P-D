@@ -11,5 +11,8 @@
     <string name="action_style">Style</string>
     <string name="action_deleteCompleted">Delete completed tasks</string>
     <string name="action_category">Update category</string>
+    <string name="mytasks">My tasks</string>
+    <string name="planned">Planned</string>
+    <string name="done">Done</string>
 
 </resources>
