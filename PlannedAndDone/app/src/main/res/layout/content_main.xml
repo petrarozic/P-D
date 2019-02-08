@@ -71,10 +71,16 @@
                 android:textSize="18sp"
                 android:textStyle="italic" />
 
-            <ListView
-                android:id="@+id/plannedTasks"
+
+            <LinearLayout
+                android:id="@+id/plannedTasksLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="20dp">
+
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/Done"
@@ -84,12 +90,17 @@
                 android:textSize="18sp"
                 android:textStyle="italic" />
 
-            <ListView
-                android:id="@+id/doneTasks"
+            <LinearLayout
+                android:id="@+id/doneTasksLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="20dp">
+
+            </LinearLayout>
 
         </LinearLayout>
+
     </ScrollView>
 
 </LinearLayout>
