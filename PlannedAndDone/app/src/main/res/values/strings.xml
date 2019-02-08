@@ -17,5 +17,12 @@
     <string name="deadline_for_task_is">Deadline for task is:</string>
     <string name="optional">optional:</string>
     <string name="my_task_is">My task is:</string>
+    <string name="mytasks">My tasks</string>
+    <string name="planned">Planned</string>
+    <string name="done">Done</string>
+    <string name="addcategory">Add category</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
 
 </resources>
