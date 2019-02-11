@@ -73,7 +73,7 @@ public class AddTaskActivity extends AppCompatActivity implements DatePickerDial
                 });
 
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+        /*DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
 
                     @Override
@@ -84,7 +84,7 @@ public class AddTaskActivity extends AppCompatActivity implements DatePickerDial
 
                     }
                 }, mYear, mMonth, mDay);
-        datePickerDialog.show();
+        datePickerDialog.show();*/
     }
 
 
