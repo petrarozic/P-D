@@ -2,7 +2,6 @@ package com.pnd.future_bosses.plannedanddone;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.icu.util.Calendar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,14 +15,13 @@ import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class AddTaskActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+    
 
-    Button deadline;
-    Button plan;
-
-    int day, month, year, hour, minute;
+    boolean type = true; // true za deadline, false za planned
     int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
 
     @Override
@@ -42,34 +40,65 @@ public class AddTaskActivity extends AppCompatActivity implements DatePickerDial
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items2);
         category.setAdapter(adapter2);
 
-        deadline = (Button) findViewById(R.id.b_d);
-        plan = (Button) findViewById(R.id.b_p);
+        (findViewById(R.id.b_d))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int day, month, year;
+                        type = true;
+                        Calendar c = Calendar.getInstance();
+                        year = c.get(Calendar.YEAR);
+                        month = c.get(Calendar.MONTH);
+                        day = c.get(Calendar.DAY_OF_MONTH);
+
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(AddTaskActivity.this, AddTaskActivity.this, day, month, year);
+                        datePickerDialog.show();
+                    }
+                });
+
+        (findViewById(R.id.b_p))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int day, month, year;
+                        type = false;
+                        Calendar c = Calendar.getInstance();
+                        year = c.get(Calendar.YEAR);
+                        month = c.get(Calendar.MONTH);
+                        day = c.get(Calendar.DAY_OF_MONTH);
+
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(AddTaskActivity.this, AddTaskActivity.this, day, month, year);
+                        datePickerDialog.show();
+                    }
+                });
 
 
-    }
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
 
-    public void deadlinePicker(View view) {
-        String timestamp = new SimpleDateFormat("yyyyMMdd").format(java.util.Calendar.getInstance().getTime());
-        year = Integer.parseInt(timestamp.substring(0,3));
-        month = Integer.parseInt(timestamp.substring(4,5));
-        day = Integer.parseInt(timestamp.substring(5,6));
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(AddTaskActivity.this, AddTaskActivity.this, day, month, year);
+                        edittext_date.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+
+                    }
+                }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
 
-    public void planPicker(View view) {
-    }
 
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+        int  hour, minute;
+
         yearFinal = i;
-        monthFinal = i1 + 1;
+        monthFinal = i1;
         dayFinal = i2;
 
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(java.util.Calendar.getInstance().getTime());
-        hour = Integer.parseInt(timestamp.substring(10,11));
-        minute = Integer.parseInt(timestamp.substring(12,13));
+        Calendar c = Calendar.getInstance();
+        hour = c.get(Calendar.HOUR_OF_DAY);
+        minute = c.get(Calendar.MINUTE);
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(AddTaskActivity.this, AddTaskActivity.this, hour, minute, true);
         timePickerDialog.show();
@@ -77,8 +106,33 @@ public class AddTaskActivity extends AppCompatActivity implements DatePickerDial
 
     @Override
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
+
         hourFinal = i;
         minuteFinal = i1;
-//textwiev pokraj kalendarica u koji se ispise vrijeme
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, yearFinal);
+        cal.set(Calendar.MONTH, monthFinal);
+        cal.set(Calendar.DAY_OF_MONTH, dayFinal);
+        cal.set(Calendar.HOUR_OF_DAY, hourFinal);
+        cal.set(Calendar.MINUTE, minuteFinal);
+        Date date = cal.getTime();
+
+        android.text.format.DateFormat df = new android.text.format.DateFormat();
+        String result = df.format("dd/MM/yyyy, HH:mm", date).toString();
+
+        if(type)
+        {
+            TextView deadline = (TextView) findViewById(R.id.deadlineView);
+            deadline.setText(result);
+
+        }
+        else
+        {
+            TextView planned = (TextView) findViewById(R.id.plannedView);
+            planned.setText(result);
+        }
     }
+
+
 }

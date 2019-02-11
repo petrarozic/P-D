@@ -34,13 +34,13 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textViewoptional"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/optional"
-        android:layout_marginTop ="15dp"
-        android:layout_marginBottom ="15dp"/>
-
+        android:textSize="13dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"/>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -55,11 +55,21 @@
             android:textSize="17dp"
             android:textColor="@android:color/black"/>
 
+        <TextView
+            android:id="@+id/deadlineView"
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_marginTop="23dp"
+            android:text=""
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="13dp"
+            app:layout_constraintRight_toLeftOf="@+id/b_d"
+            android:layout_marginRight="16dp" />
+
         <Button
             android:id="@+id/b_d"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:onClick="deadlinePicker"
             android:background="@drawable/date_time"
             android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent"
@@ -71,12 +81,14 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="8dp" />
 
+
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
 
         <TextView
             android:id="@+id/textView4"
@@ -85,11 +97,22 @@
             android:text="@string/i_plan_to_finish_task_by"
             android:textSize="17dp"
             android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/plannedView"
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_marginTop="23dp"
+            android:text=""
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="13dp"
+            app:layout_constraintRight_toLeftOf="@+id/b_p"
+            android:layout_marginRight="16dp" />
+
         <Button
             android:id="@+id/b_p"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:onClick="planPicker"
             android:background="@drawable/date_time"
             android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent"

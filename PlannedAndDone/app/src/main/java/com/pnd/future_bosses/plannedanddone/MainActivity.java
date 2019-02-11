@@ -193,17 +193,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_deadlineDown) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_deadlineUp) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_plannedDown) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_plannedUp) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_priorityDown) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_priorityUp) {
 
         }
 
@@ -236,12 +236,11 @@ public class MainActivity extends AppCompatActivity
     {
         Toast.makeText(this,
                 "id: " + c.getString(0) + "\n" +
-
                         "Name: " + c.getString(1) + "\n" +
                         "time:  " + c.getString(2) + "\n" +
                         "deadline: " + c.getString(3) + "\n" +
                         "category: " + c.getString(4) + "\n" +
-                        "priority  " + c.getString(5),
+                        "priority  " + c.getString(5) +
                         "Name: " + c.getString(1) + "\n" ,
                         //"time:  " + c.getString(2),
                 Toast.LENGTH_LONG).show();
