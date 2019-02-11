@@ -37,7 +37,7 @@ public class DBAdapter implements Serializable{
 
     static final String TAG = "DBAdapter";
     static final String DATABASE_NAME = "PD_DB";
-    static final int DATABASE_VERSION = 1;
+    static final int DATABASE_VERSION = 5;
 
 
     final Context context;

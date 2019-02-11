@@ -1,0 +1,147 @@
+// Kako koristiti funkcije iz ContentProvider - kod nas sve pozive TaskProvidera zamijeniti DataBase
+
+
+
+package com.example.sapuzar.providerproba;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+import android.support.v4.content.CursorLoader;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class TaskActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_task);
+
+
+        // Unos
+        ContentValues values = new ContentValues();
+        values.put("name", "zad1");
+
+        Uri uri = getContentResolver().insert(
+                Uri.parse(
+                        "content://hr.math.provider.contprov/task"),
+                values);
+
+        ContentValues values1 = new ContentValues();
+        values1.put("name", "zad2");
+        values1.put("time", "");
+        values1.put("deadline", "");
+        values1.put("priority", 0);
+        values1.put("category", 0);
+        values1.put("done", 0);
+
+        Uri uri2 = getContentResolver().insert(
+                Uri.parse(
+                        "content://hr.math.provider.contprov/task"),
+                values1);
+
+        Uri table = Uri.parse(
+                "content://hr.math.provider.contprov/task");
+
+        // Ispis
+        Cursor c;
+        if (android.os.Build.VERSION.SDK_INT <11) {
+            //---before Honeycomb---
+            c = managedQuery(table, null, null, null, null);
+        } else {
+            //---Honeycomb and later---
+            CursorLoader cursorLoader = new CursorLoader(
+                    this,
+                    table, null, null, null, null);
+            c = cursorLoader.loadInBackground();
+        }
+
+        if (c.moveToFirst()) {
+            do{
+                Toast.makeText(this,
+                        c.getString(c.getColumnIndex(TaskProvider.TASK_ID)) + ", " +
+                                c.getString(c.getColumnIndex(TaskProvider.TASK_NAME)),
+                        Toast.LENGTH_SHORT).show();
+            } while (c.moveToNext());
+        }
+
+        // Brisanje
+        String where = TaskProvider.TASK_NAME + " LIKE " + "'zad1'";
+
+        int count = getContentResolver().delete(table, where, null);
+        Toast.makeText(this, "Izbrisano je " + count + " zadataka.", Toast.LENGTH_SHORT).show();
+
+        // Ispis
+
+        if (android.os.Build.VERSION.SDK_INT <11) {
+            //---before Honeycomb---
+            c = managedQuery(table, null, null, null, null);
+        } else {
+            //---Honeycomb and later---
+            CursorLoader cursorLoader = new CursorLoader(
+                    this,
+                    table, null, null, null, null);
+            c = cursorLoader.loadInBackground();
+        }
+
+        if (c.moveToFirst()) {
+            do{
+                Toast.makeText(this,
+                        c.getString(c.getColumnIndex(TaskProvider.TASK_ID)) + ", " +
+                                c.getString(c.getColumnIndex(TaskProvider.TASK_NAME)),
+                        Toast.LENGTH_SHORT).show();
+            } while (c.moveToNext());
+        }
+
+        // Update
+        ContentValues values3 = new ContentValues();
+        values3.put("name", "petra");
+        values3.put("time", "podne");
+        where = TaskProvider.TASK_NAME + " LIKE " + "'zad2'";
+        count = getContentResolver().update(table, values3, where, null);
+
+        // Ispis
+
+        if (android.os.Build.VERSION.SDK_INT <11) {
+            //---before Honeycomb---
+            c = managedQuery(table, null, null, null, null);
+        } else {
+            //---Honeycomb and later---
+            CursorLoader cursorLoader = new CursorLoader(
+                    this,
+                    table, null, null, null, null);
+            c = cursorLoader.loadInBackground();
+        }
+
+        if (c.moveToFirst()) {
+            do{
+                Toast.makeText(this,
+                        c.getString(c.getColumnIndex(TaskProvider.TASK_ID)) + ", " +
+                                c.getString(c.getColumnIndex(TaskProvider.TASK_TIME))+ ", " +
+                                c.getString(c.getColumnIndex(TaskProvider.TASK_NAME)),
+                        Toast.LENGTH_SHORT).show();
+            } while (c.moveToNext());
+        }
+
+        // Query
+        where = TaskProvider.TASK_NAME + " LIKE " + "'petra'";
+        c = getContentResolver().query(table, new String[]{TaskProvider.TASK_ID,TaskProvider.TASK_NAME, TaskProvider.TASK_TIME}, where, null, "time DESC");
+
+        Toast.makeText(this, "Query zavrsio",Toast.LENGTH_SHORT).show();
+
+        if (c.moveToFirst()) {
+            do{
+                Toast.makeText(this,
+                        c.getString(c.getColumnIndex(TaskProvider.TASK_ID)) + ", " +
+                                c.getString(c.getColumnIndex(TaskProvider.TASK_TIME))+ ", " +
+                                c.getString(c.getColumnIndex(TaskProvider.TASK_NAME)),
+                        Toast.LENGTH_SHORT).show();
+            } while (c.moveToNext());
+        }
+
+
+    }
+}
