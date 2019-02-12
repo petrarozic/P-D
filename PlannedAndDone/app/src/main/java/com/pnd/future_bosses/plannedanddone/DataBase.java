@@ -51,7 +51,9 @@ public class DataBase extends ContentProvider {
     static final String DATABASE_NAME = "DB";
     static final String TASK_TABLE = "task";
     static final String CATEGORY_TABLE = "category";
-    static final int DATABASE_VERSION = 14;
+
+    static final int DATABASE_VERSION = 6;
+
     static final String TASK_CREATE =
             "create table task (_id integer primary key autoincrement, "
                     + "name text not null, time text, deadline text, priority integer, category integer, done integer);";
@@ -220,4 +222,5 @@ public class DataBase extends ContentProvider {
         getContext().getContentResolver().notifyChange(table, null);
         return count;
     }
+
 }

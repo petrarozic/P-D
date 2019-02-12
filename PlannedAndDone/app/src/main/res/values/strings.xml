@@ -23,6 +23,8 @@
     <string name="addcategory">Add category</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="completed_tasks_deleted_success">Completed tasks have been deleted successfully!</string>
+    <string name="completed_tasks_deleted_not_success">Sadly you do not have any completed taskss to delete.</string>
 
 
 </resources>

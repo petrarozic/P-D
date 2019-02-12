@@ -11,6 +11,7 @@ import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+
 import android.support.v4.content.ContentResolverCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.ResourceCursorAdapter;
@@ -91,6 +92,40 @@ public class MainActivity extends AppCompatActivity
             c = cursorLoader.loadInBackground();
         }
 
+
+        // Punjenje za probu : Category
+        // dodaj kategoriju
+        ContentValues values = new ContentValues();
+        values.clear();
+        values.put("name", "Faks");
+        Uri uri2 = getContentResolver().insert(
+                Uri.parse("content://hr.math.provider.contprov/category"), values);
+
+        Uri table2 = Uri.parse(
+                "content://hr.math.provider.contprov/category");
+        // Ispis
+        if (android.os.Build.VERSION.SDK_INT <11) {
+            //---before Honeycomb---
+            c = managedQuery(table2, null, null, null, null);
+        } else {
+            //---Honeycomb and later---
+            CursorLoader cursorLoader = new CursorLoader(
+                    this,
+                    table2, null, null, null, null);
+            c = cursorLoader.loadInBackground();
+        }
+
+        if (c.moveToFirst()) {
+            do{
+                Toast.makeText(this,
+                        c.getString(c.getColumnIndex(DataBase.CATEGORY_ID)) + ", " +
+                                c.getString(c.getColumnIndex(DataBase.CATEGORY_NAME)),
+                        Toast.LENGTH_SHORT).show();
+            } while (c.moveToNext());
+        }
+
+
+
         /*
         //TOAST
         if (c.moveToFirst()) {
@@ -100,6 +135,7 @@ public class MainActivity extends AppCompatActivity
         }
          */
 
+        printTasks();
     }
 
 
@@ -107,70 +143,7 @@ public class MainActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
 
-        //*********************
-        //DOHVATI SVE ZADATKE
-        //*********************
-        Cursor c;
-        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
-        if (android.os.Build.VERSION.SDK_INT <11) {
-            c = managedQuery(table, null, null, null, null);
-        } else {
-            CursorLoader cursorLoader = new CursorLoader(this,table, null, null, null, null);
-            c = cursorLoader.loadInBackground();
-        }
-
-        //*********************
-        //PRIKAZI ZADATKE U MAIN_AC
-        //AKTIVNI & ZAVRSENI
-        //*********************
-        LinearLayout plannedTasks = (LinearLayout)findViewById(R.id.plannedTasksLayout);
-        LinearLayout doneTasks = (LinearLayout)findViewById(R.id.doneTasksLayout);
-
-        if (c.moveToFirst()) {
-            do{
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View taskLayout = inflater.inflate(R.layout.listview_item, null);
-
-                TextView taskName = (TextView) taskLayout.findViewById(R.id.taskName);
-                taskName.setText(c.getString(c.getColumnIndex(DataBase.TASK_NAME)));
-
-                TextView taskTime = (TextView) taskLayout.findViewById(R.id.taskDate);
-                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_TIME)));
-
-                TextView taskDeadline = (TextView) taskLayout.findViewById(R.id.taskDeadline);
-                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE)));
-
-                ImageView priorityImg = (ImageView) taskLayout.findViewById((R.id.priorityImg));
-                switch (c.getInt(4)){
-                    case 1 :
-                        priorityImg.setImageResource(R.drawable.crveni);
-                        break;
-                    case 2:
-                        priorityImg.setImageResource(R.drawable.zuti);
-                        break;
-                    case 3:
-                        priorityImg.setImageResource(R.drawable.zeleni);
-                        break;
-                    default:
-                        priorityImg.setImageResource(R.drawable.sivi);
-                        break;
-                }
-
-                switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))){
-                    case 1 :
-                        doneTasks.addView(taskLayout);
-                        break;
-                    case 0 :
-                        plannedTasks.addView(taskLayout);
-                        break;
-                    default:
-                        break;
-                }
-
-            } while (c.moveToNext());
-        }
-
-        Toast.makeText(this, "ZAVRSIO onResume", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "ZAVRSIO onResume", Toast.LENGTH_LONG).show();
     }
 
 
@@ -251,12 +224,19 @@ public class MainActivity extends AppCompatActivity
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        db.open();
-                        db.deleteAllCopmletedTasks();
-                        db.close();
-                        Toast.makeText(MainActivity.this, "Completed tasks have ben deleted successfully!", Toast.LENGTH_SHORT).show();
+                        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+                        String where = DataBase.TASK_DONE + "=1";
+
+                        int count = getContentResolver().delete(table, where, null);
+
+                        if(count > 0)
+                            Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_success, Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_not_success, Toast.LENGTH_SHORT).show();
+                        printTasks();
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
+
     }
 
 
@@ -280,11 +260,76 @@ public class MainActivity extends AppCompatActivity
     //uredi kategorije
     public void updateCategoryClick(MenuItem item) {
         Intent i = new Intent(MainActivity.this, EditCategories.class);
-        Bundle b = new Bundle();
-        b.putSerializable("EXTRA_MESSAGE",db);
-        i.putExtras(b);
-        //i.putExtra(&quot;DBAdapterObject&quot;, db);
         startActivity(i);
+    }
+
+    public void printTasks(){
+        //*********************
+        //DOHVATI SVE ZADATKE
+        //*********************
+        Cursor c;
+        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
+        if (android.os.Build.VERSION.SDK_INT <11) {
+            c = managedQuery(table, null, null, null, null);
+        } else {
+            CursorLoader cursorLoader = new CursorLoader(this,table, null, null, null, null);
+            c = cursorLoader.loadInBackground();
+        }
+
+        //*********************
+        //PRIKAZI ZADATKE U MAIN_AC
+        //AKTIVNI & ZAVRSENI
+        //*********************
+        LinearLayout plannedTasks = (LinearLayout)findViewById(R.id.plannedTasksLayout);
+        plannedTasks.removeAllViews();
+        LinearLayout doneTasks = (LinearLayout)findViewById(R.id.doneTasksLayout);
+        doneTasks.removeAllViews();
+
+        if (c.moveToFirst()) {
+            do{
+                DisplayTask(c);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View taskLayout = inflater.inflate(R.layout.listview_item, null);
+
+                TextView taskName = (TextView) taskLayout.findViewById(R.id.taskName);
+                taskName.setText(c.getString(c.getColumnIndex(DataBase.TASK_NAME)));
+
+                TextView taskTime = (TextView) taskLayout.findViewById(R.id.taskDate);
+                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_TIME)));
+
+                TextView taskDeadline = (TextView) taskLayout.findViewById(R.id.taskDeadline);
+                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE)));
+
+                ImageView priorityImg = (ImageView) taskLayout.findViewById((R.id.priorityImg));
+                switch (c.getInt(4)){
+                    case 1 :
+                        priorityImg.setImageResource(R.drawable.crveni);
+                        break;
+                    case 2:
+                        priorityImg.setImageResource(R.drawable.zuti);
+                        break;
+                    case 3:
+                        priorityImg.setImageResource(R.drawable.zeleni);
+                        break;
+                    default:
+                        priorityImg.setImageResource(R.drawable.sivi);
+                        break;
+                }
+
+                switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))){
+                    case 1 :
+                        doneTasks.addView(taskLayout);
+                        break;
+                    case 0 :
+                        plannedTasks.addView(taskLayout);
+                        break;
+                    default:
+                        break;
+                }
+
+            } while (c.moveToNext());
+        }
+
     }
 
     public boolean insertTask (String ime, String time, String deadline, int priority, int category, int done){

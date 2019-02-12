@@ -1,9 +1,12 @@
 package com.pnd.future_bosses.plannedanddone;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.app.ShareCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,26 +29,7 @@ public class EditCategories extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_categories);
 
-        Bundle bundle = getIntent().getExtras();
-        db1 = (DBAdapter) bundle.getSerializable("EXTRA_MESSAGE");
-
-        db1.open();
-        db1.insertCategory("kuća");
-        db1.insertCategory("posao");
-
-
-        Cursor cu = db1.getAllCategories();
-
-
-        if (cu.moveToFirst())
-        {
-            do {
-                DisplayContact(cu);
-            } while (cu.moveToNext());
-        }
-        db1.close();
         listAllCategories();
-
     }
 
     public void addNewCategory(View view) {
@@ -53,37 +37,58 @@ public class EditCategories extends AppCompatActivity {
         String text = editText.getText().toString();
 
         if(!text.equals("")){
+
+            /*
             db1.open();
             db1.insertCategory(text);
             Cursor c = db1.getAllCategories();
             DisplayContact(c);
             db1.close();
+            */
+            ContentValues values = new ContentValues();
+            values.put("name", text);
+
+            Uri uri = getContentResolver().insert(
+                    Uri.parse("content://hr.math.provider.contprov/category"), values);
+
+            listAllCategories();
         }
 
     }
 
     public void listAllCategories(){
-        db1.open();
-        //getati sve kategorije
-        Cursor c = db1.getAllCategories();
-        //getati listu
+
+        Uri table = Uri.parse( "content://hr.math.provider.contprov/category");
+
         ListView list = (ListView)findViewById(R.id.listView);
         arrayList = new ArrayList<String>();
-
-
+        Cursor c;
+        if (android.os.Build.VERSION.SDK_INT <11) {
+            //---before Honeycomb---
+            c = managedQuery(table, null, null, null, null);
+        } else {
+            //---Honeycomb and later---
+            CursorLoader cursorLoader = new CursorLoader(
+                    this,
+                    table, null, null, null, null);
+            c = cursorLoader.loadInBackground();
+        }
         if (c.moveToFirst())
         {
             do {
                 DisplayContact(c);
 
-                arrayList.add(c.getString(1));
+                arrayList.add(c.getString(c.getColumnIndex(DataBase.CATEGORY_NAME)));
+                Toast.makeText(getApplicationContext(), c.getString(c.getColumnIndex(DataBase.CATEGORY_NAME)), Toast.LENGTH_SHORT).show();
 
             } while (c.moveToNext());
         }
-        db1.close();
-        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.activity_list_item ,arrayList);
+        adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.category_item_layout, arrayList);
         list.setAdapter(adapter);
+
     }
+
+
 
     //funkcija za ispis
     public void DisplayContact(Cursor c)
@@ -95,4 +100,9 @@ public class EditCategories extends AppCompatActivity {
                 Toast.LENGTH_LONG).show();
     }
 
+    public void backToMain(View view) {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 }
