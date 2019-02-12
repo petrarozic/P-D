@@ -77,7 +77,7 @@ public class EditCategories extends AppCompatActivity {
 
             Uri uri = getContentResolver().insert(
                     Uri.parse("content://hr.math.provider.contprov/category"), values);
-
+            editText.setText("");
             listAllCategories();
         }
 

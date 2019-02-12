@@ -29,6 +29,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public DBAdapter db;
+    List<Integer> taskID;
 
     public DataBase dataBase;
     @Override
@@ -114,7 +118,7 @@ public class MainActivity extends AppCompatActivity
                     table2, null, null, null, null);
             c = cursorLoader.loadInBackground();
         }
-
+/*
         if (c.moveToFirst()) {
             do{
                 Toast.makeText(this,
@@ -124,7 +128,7 @@ public class MainActivity extends AppCompatActivity
             } while (c.moveToNext());
         }
 
-
+*/
 
         /*
         //TOAST
@@ -269,6 +273,7 @@ public class MainActivity extends AppCompatActivity
         //DOHVATI SVE ZADATKE
         //*********************
         Cursor c;
+        taskID= new ArrayList<Integer>();
         Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
         if (android.os.Build.VERSION.SDK_INT <11) {
             c = managedQuery(table, null, null, null, null);
@@ -288,9 +293,19 @@ public class MainActivity extends AppCompatActivity
 
         if (c.moveToFirst()) {
             do{
-                DisplayTask(c);
+                //DisplayTask(c);
+                // id zadataka
+
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View taskLayout = inflater.inflate(R.layout.listview_item, null);
+
+                CheckBox check = (CheckBox) taskLayout.findViewById((R.id.checkBox));
+                check.setTag(c.getInt(c.getColumnIndex(dataBase.TASK_ID)));
+
+
+
+                ImageButton editButton = (ImageButton) taskLayout.findViewById(R.id.editButton);
+                editButton.setTag(c.getInt(c.getColumnIndex(dataBase.TASK_ID)));
 
                 TextView taskName = (TextView) taskLayout.findViewById(R.id.taskName);
                 taskName.setText(c.getString(c.getColumnIndex(DataBase.TASK_NAME)));
@@ -303,7 +318,7 @@ public class MainActivity extends AppCompatActivity
 
                 ImageView priorityImg = (ImageView) taskLayout.findViewById((R.id.priorityImg));
                 switch (c.getInt(4)){
-                    case 1 :
+                    case 1:
                         priorityImg.setImageResource(R.drawable.crveni);
                         break;
                     case 2:
@@ -319,6 +334,7 @@ public class MainActivity extends AppCompatActivity
 
                 switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))){
                     case 1 :
+                        check.setChecked(true);
                         doneTasks.addView(taskLayout);
                         break;
                     case 0 :
@@ -328,9 +344,49 @@ public class MainActivity extends AppCompatActivity
                         break;
                 }
 
+                check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        // update your model (or other business logic) based on isChecked
+
+                        int doneID =(int) buttonView.getTag();
+                        ContentValues values = new ContentValues();
+                        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+                        String where = DataBase.TASK_ID + "=" + doneID;
+                        Toast.makeText(getApplicationContext(),
+                                DataBase.TASK_ID + "=" + doneID,
+                                Toast.LENGTH_SHORT).show();
+
+                        Cursor c1 = getContentResolver().query(table,
+                                new String[]{DataBase.TASK_ID,DataBase.TASK_NAME, DataBase.TASK_TIME, DataBase.TASK_DEADLINE, DataBase.TASK_PRIORITY, DataBase.TASK_CATEGORY}, where, null, null);
+
+                        if(c1.moveToFirst()) {
+                            values.put("name", c1.getString(c1.getColumnIndex(DataBase.TASK_NAME)));
+                            values.put("time", c1.getString(c1.getColumnIndex(DataBase.TASK_TIME)));
+                            values.put("deadline", c1.getString(c1.getColumnIndex(DataBase.TASK_DEADLINE)));
+                            values.put("priority", c1.getInt(c1.getColumnIndex(DataBase.TASK_PRIORITY)));
+                            values.put("category", c1.getInt(c1.getColumnIndex(DataBase.TASK_CATEGORY)));
+/*
+                            if (isChecked){
+
+                                    values.put("done", 1);
+                                    getContentResolver().update(table, values, where, null);
+
+                            }else{
+
+                                    values.put("done", 0);
+                                    getContentResolver().update(table, values, where, null);
+
+                            }*/
+                        }
+
+
+                        printTasks();
+
+                    }
+                });
+
             } while (c.moveToNext());
         }
-
     }
 
     public boolean insertTask (String ime, String time, String deadline, int priority, int category, int done){
@@ -349,5 +405,37 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void editTask(View view) {
+    }
+
+    public void checkedTask(View view) {
+       /* int doneID = (int)((CheckBox) view).getTag();
+        boolean checked = ((CheckBox) view).isChecked();
+        ContentValues values = new ContentValues();
+        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+        String where = DataBase.TASK_ID + "=" + doneID;
+        Cursor c = getContentResolver().query(table,
+                new String[]{DataBase.TASK_ID,DataBase.TASK_NAME, DataBase.TASK_TIME, DataBase.TASK_DEADLINE, DataBase.TASK_PRIORITY, DataBase.TASK_CATEGORY}, where, null, null);
+        values.put("name", c.getString(1));
+        values.put("time", c.getString(2));
+        values.put("deadline", c.getString(3));
+        values.put("priority", c.getInt(4));
+        values.put("category", c.getInt(5));
+        if (checked){
+            if(c.moveToFirst()) {
+                values.put("done", 1);
+                getContentResolver().update(table, values, where, null);
+            }
+        }else{
+            values.put("done", 0);
+            getContentResolver().update(table, values, where, null);
+        }*/
+
+        Toast.makeText(this,
+                "U clicku",
+                Toast.LENGTH_SHORT).show();
+
+        printTasks();
+    }
 }
 
