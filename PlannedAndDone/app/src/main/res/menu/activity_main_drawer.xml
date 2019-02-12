@@ -20,10 +20,28 @@
 
     <item android:title="Filter">
         <menu>
-            <item android:id="@+id/nav_share" android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item android:id="@+id/nav_send" android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+            <item android:id="@+id/nav_priority" android:title="Priority">
+                <menu>
+                    <item android:id="@+id/nav_priorityHighest" android:title="Highest"></item>
+                    <item android:id="@+id/nav_priorityMedium" android:title="Medium"></item>
+                    <item android:id="@+id/nav_priorityLowest" android:title="Lowest"></item>
+                </menu>
+            </item>
+            <item android:id="@+id/nav_Category" android:title="Catergory" />
+            <item android:id="@+id/nav_Deadline" android:title="Deadline">
+                <menu>
+                    <item android:id="@+id/nav_deadlineDay" android:title="Today"></item>
+                    <item android:id="@+id/nav_deadlineWeek" android:title="This week"></item>
+                    <item android:id="@+id/nav_deadlineMonth" android:title="This month"></item>
+                </menu>
+            </item>
+            <item android:id="@+id/nav_planned" android:title="Planned time">
+                <menu>
+                    <item android:id="@+id/nav_plannedDay" android:title="Today"></item>
+                    <item android:id="@+id/nav_plannedWeek" android:title="This week"></item>
+                    <item android:id="@+id/nav_plannedMonth" android:title="This month"></item>
+                </menu>
+            </item>
         </menu>
     </item>
 

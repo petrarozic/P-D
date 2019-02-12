@@ -218,4 +218,18 @@ public class DataBase extends ContentProvider {
         }
         getContext().getContentResolver().notifyChange(table, null);
         return count;
-    }}
+    }
+
+    public void insertTask(String name, String time, String deadline, int priority, int category, int done){
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("time", time);
+        values.put("deadline", deadline);
+        values.put("priority", priority);
+        values.put("category", category);
+        values.put("done", done);
+
+        Uri uri2 = insert(
+                Uri.parse("content://hr.math.provider.contprov/task"), values);
+    }
+}
