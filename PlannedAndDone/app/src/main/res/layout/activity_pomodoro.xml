@@ -100,21 +100,24 @@
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:text="@string/start"
-            android:layout_gravity="center|bottom"/>
+            android:layout_gravity="center|bottom"
+            android:onClick="stratTimer"/>
 
         <Button
             android:id="@+id/button12"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="@string/stop"
-            android:layout_gravity="center|bottom"/>
+            android:text="@string/pause"
+            android:layout_gravity="center|bottom"
+            android:onClick="pauseTimer"/>
 
         <Button
             android:id="@+id/button13"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:text="@string/reset"
-            android:layout_gravity="center|bottom"/>
+            android:layout_gravity="center|bottom"
+            android:onClick="resetTimer"/>
     </LinearLayout>
 
 
