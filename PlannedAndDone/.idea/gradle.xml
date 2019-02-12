@@ -7,8 +7,15 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
+
             <option value="/var/cache/fscache/home/student1/sapuzar/Desktop/plannedANDdone/PlannedAndDone" />
             <option value="/var/cache/fscache/home/student1/sapuzar/Desktop/plannedANDdone/PlannedAndDone/app" />
+
+            <option value="/var/cache/fscache/home/student1/pavujas/Desktop/p-d/PlannedAndDone" />
+            <option value="/var/cache/fscache/home/student1/pavujas/Desktop/p-d/PlannedAndDone/app" />
+            <option value="/.home/student1/perozic/p-d/PlannedAndDone" />
+            <option value="/.home/student1/perozic/p-d/PlannedAndDone/app" />
+
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
