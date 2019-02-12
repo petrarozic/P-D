@@ -313,12 +313,12 @@ public class MainActivity extends AppCompatActivity
                 View taskLayout = inflater.inflate(R.layout.listview_item, null);
 
                 CheckBox check = (CheckBox) taskLayout.findViewById((R.id.checkBox));
-                check.setTag(c.getInt(c.getColumnIndex(dataBase.TASK_ID)));
+                check.setTag(c.getInt(c.getColumnIndex(DataBase.TASK_ID)));
 
 
 
                 ImageButton editButton = (ImageButton) taskLayout.findViewById(R.id.editButton);
-                editButton.setTag(c.getInt(c.getColumnIndex(dataBase.TASK_ID)));
+                editButton.setTag(c.getInt(c.getColumnIndex(DataBase.TASK_ID)));
 
                 TextView taskName = (TextView) taskLayout.findViewById(R.id.taskName);
                 taskName.setText(c.getString(c.getColumnIndex(DataBase.TASK_NAME)));

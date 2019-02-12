@@ -17,6 +17,9 @@ public class Pomodoro extends AppCompatActivity {
     int timeMin = 0;
     int timeSec = 0;
     CountDownTimer ti;
+    boolean isPaused = false;
+    long timeR;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,30 +82,39 @@ public class Pomodoro extends AppCompatActivity {
 
     public void pauseTimer(View view) {
         //zaustavi timer
-
-        try {
-            //spremi vrijeme u neku varijablu
-            ti.wait();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(ti != null) {
+            ti.cancel();
+            isPaused = true;
         }
     }
 
     public void stratTimer(View view) {
+
+
         //provjeri je li timer pauziran i ako je pokreni ga s perthodnim vremenom
-        //ti.start();
+        if(isPaused == true){
+            isPaused = false;
+
+        }
+        else{
+            timeR = timeMin * 60000;
+        }
+
 
         //inace pokreni timer od zadanog vremena
         final TextView m = (TextView) findViewById( R.id.minutes );
         final TextView s = (TextView) findViewById( R.id.seconds );
+        ((TextView) findViewById( R.id.col )).setTextColor(Color.RED);
+        m.setTextColor(Color.GREEN);
+        s.setTextColor(Color.GREEN);
 
         if(ti != null)
             ti.cancel();
 
-        ti = new CountDownTimer(timeMin * 60000, 1000) { // adjust the milli seconds here
+        ti = new CountDownTimer(timeR, 1000) { // adjust the milli seconds here
 
             public void onTick(long millisUntilFinished) {
-
+                timeR = millisUntilFinished;
                 if(TimeUnit.MILLISECONDS.toMinutes( millisUntilFinished)<10){
                     //nalijepi 0 na pocetak
                     ms = "0"+(TimeUnit.MILLISECONDS.toMinutes( millisUntilFinished));
@@ -129,8 +141,8 @@ public class Pomodoro extends AppCompatActivity {
                 s.setTextColor(Color.RED);
             }
         }.start();
-      //  Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         // Vibrate for 500 milliseconds
-        //v.vibrate(500);
+        v.vibrate(500);
     }
 }
