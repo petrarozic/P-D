@@ -95,9 +95,10 @@ public class MainActivity extends AppCompatActivity
 
         // Punjenje za probu : Category
         // dodaj kategoriju
+        ContentValues values = new ContentValues();
         values.clear();
         values.put("name", "Faks");
-        uri2 = getContentResolver().insert(
+        Uri uri2 = getContentResolver().insert(
                 Uri.parse("content://hr.math.provider.contprov/category"), values);
 
         Uri table2 = Uri.parse(
@@ -279,15 +280,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void deleteAllDone(MenuItem item) {
+
         new AlertDialog.Builder(this)
-                .setTitle("Title")
+                .setTitle("Delete tasks")
                 .setMessage("Do you really want to delete all completed tasks?")
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Uri table = Uri.parse("content://hr.math.provider.contprov/task");
-                        String where = DataBase.TASK_DONE + "=0";
+                        String where = DataBase.TASK_DONE + "=1";
 
                         int count = getContentResolver().delete(table, where, null);
 
