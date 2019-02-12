@@ -404,6 +404,9 @@ public class MainActivity extends AppCompatActivity
 
 
     public void editTask(View view) {
+        Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
+        intent.putExtra("FLAG", "edit");
+        startActivity(intent);
     }
 
     public void checkedTask(View view) {
