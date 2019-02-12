@@ -232,8 +232,9 @@ public class MainActivity extends AppCompatActivity
     */
 
     public void deleteAllDone(MenuItem item) {
+
         new AlertDialog.Builder(this)
-                .setTitle("Title")
+                .setTitle("Delete tasks")
                 .setMessage("Do you really want to delete all completed tasks?")
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {

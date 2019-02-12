@@ -1,13 +1,20 @@
 package com.pnd.future_bosses.plannedanddone;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.Uri;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -140,4 +147,42 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
     }
 
 
+    public void cancel(View view) {
+        this.finish();
+    }
+
+    public void save(View view) {
+
+        EditText nameLabel = (EditText)findViewById(R.id.name);
+        String name = nameLabel.getText().toString();
+
+        if(name.equals(""))
+        {
+            new android.support.v7.app.AlertDialog.Builder(this)
+                    .setTitle("Notification")
+                    .setMessage("You can not save an empty task.")
+                    .setPositiveButton(android.R.string.yes, null).show();
+
+        }
+        else
+        {
+            insertTask(name, "VRIJEMEXXX", "KRAJNJE_VRIJEME1", 1, 0, 0);
+            this.finish();
+        }
+    }
+
+    public boolean insertTask (String ime, String time, String deadline, int priority, int category, int done){
+        ContentValues values = new ContentValues();
+        values.put("name", ime);
+        values.put("time", time);
+        values.put("deadline", deadline);
+        values.put("priority", priority);
+        values.put("category", category);
+        values.put("done", done);
+
+        Uri uri = getContentResolver().insert(
+                Uri.parse("content://hr.math.provider.contprov/task"), values);
+
+        return true;
+    }
 }
