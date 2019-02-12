@@ -95,9 +95,10 @@ public class MainActivity extends AppCompatActivity
 
         // Punjenje za probu : Category
         // dodaj kategoriju
+        ContentValues values = new ContentValues();
         values.clear();
         values.put("name", "Faks");
-        uri2 = getContentResolver().insert(
+        Uri uri2 = getContentResolver().insert(
                 Uri.parse("content://hr.math.provider.contprov/category"), values);
 
         Uri table2 = Uri.parse(
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity
         }
          */
 
-
+        printTasks();
     }
 
 
@@ -142,70 +143,7 @@ public class MainActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
 
-        //*********************
-        //DOHVATI SVE ZADATKE
-        //*********************
-        Cursor c;
-        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
-        if (android.os.Build.VERSION.SDK_INT <11) {
-            c = managedQuery(table, null, null, null, null);
-        } else {
-            CursorLoader cursorLoader = new CursorLoader(this,table, null, null, null, null);
-            c = cursorLoader.loadInBackground();
-        }
-
-        //*********************
-        //PRIKAZI ZADATKE U MAIN_AC
-        //AKTIVNI & ZAVRSENI
-        //*********************
-        LinearLayout plannedTasks = (LinearLayout)findViewById(R.id.plannedTasksLayout);
-        LinearLayout doneTasks = (LinearLayout)findViewById(R.id.doneTasksLayout);
-
-        if (c.moveToFirst()) {
-            do{
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View taskLayout = inflater.inflate(R.layout.listview_item, null);
-
-                TextView taskName = (TextView) taskLayout.findViewById(R.id.taskName);
-                taskName.setText(c.getString(c.getColumnIndex(DataBase.TASK_NAME)));
-
-                TextView taskTime = (TextView) taskLayout.findViewById(R.id.taskDate);
-                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_TIME)));
-
-                TextView taskDeadline = (TextView) taskLayout.findViewById(R.id.taskDeadline);
-                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE)));
-
-                ImageView priorityImg = (ImageView) taskLayout.findViewById((R.id.priorityImg));
-                switch (c.getInt(4)){
-                    case 1 :
-                        priorityImg.setImageResource(R.drawable.crveni);
-                        break;
-                    case 2:
-                        priorityImg.setImageResource(R.drawable.zuti);
-                        break;
-                    case 3:
-                        priorityImg.setImageResource(R.drawable.zeleni);
-                        break;
-                    default:
-                        priorityImg.setImageResource(R.drawable.sivi);
-                        break;
-                }
-
-                switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))){
-                    case 1 :
-                        doneTasks.addView(taskLayout);
-                        break;
-                    case 0 :
-                        plannedTasks.addView(taskLayout);
-                        break;
-                    default:
-                        break;
-                }
-
-            } while (c.moveToNext());
-        }
-
-        Toast.makeText(this, "ZAVRSIO onResume", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "ZAVRSIO onResume", Toast.LENGTH_LONG).show();
     }
 
 
@@ -287,7 +225,7 @@ public class MainActivity extends AppCompatActivity
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Uri table = Uri.parse("content://hr.math.provider.contprov/task");
-                        String where = DataBase.TASK_DONE + "=0";
+                        String where = DataBase.TASK_DONE + "=1";
 
                         int count = getContentResolver().delete(table, where, null);
 
@@ -295,8 +233,10 @@ public class MainActivity extends AppCompatActivity
                             Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_success, Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_not_success, Toast.LENGTH_SHORT).show();
+                        printTasks();
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
+
     }
 
 
@@ -321,6 +261,75 @@ public class MainActivity extends AppCompatActivity
     public void updateCategoryClick(MenuItem item) {
         Intent i = new Intent(MainActivity.this, EditCategories.class);
         startActivity(i);
+    }
+
+    public void printTasks(){
+        //*********************
+        //DOHVATI SVE ZADATKE
+        //*********************
+        Cursor c;
+        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
+        if (android.os.Build.VERSION.SDK_INT <11) {
+            c = managedQuery(table, null, null, null, null);
+        } else {
+            CursorLoader cursorLoader = new CursorLoader(this,table, null, null, null, null);
+            c = cursorLoader.loadInBackground();
+        }
+
+        //*********************
+        //PRIKAZI ZADATKE U MAIN_AC
+        //AKTIVNI & ZAVRSENI
+        //*********************
+        LinearLayout plannedTasks = (LinearLayout)findViewById(R.id.plannedTasksLayout);
+        plannedTasks.removeAllViews();
+        LinearLayout doneTasks = (LinearLayout)findViewById(R.id.doneTasksLayout);
+        doneTasks.removeAllViews();
+
+        if (c.moveToFirst()) {
+            do{
+                DisplayTask(c);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View taskLayout = inflater.inflate(R.layout.listview_item, null);
+
+                TextView taskName = (TextView) taskLayout.findViewById(R.id.taskName);
+                taskName.setText(c.getString(c.getColumnIndex(DataBase.TASK_NAME)));
+
+                TextView taskTime = (TextView) taskLayout.findViewById(R.id.taskDate);
+                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_TIME)));
+
+                TextView taskDeadline = (TextView) taskLayout.findViewById(R.id.taskDeadline);
+                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE)));
+
+                ImageView priorityImg = (ImageView) taskLayout.findViewById((R.id.priorityImg));
+                switch (c.getInt(4)){
+                    case 1 :
+                        priorityImg.setImageResource(R.drawable.crveni);
+                        break;
+                    case 2:
+                        priorityImg.setImageResource(R.drawable.zuti);
+                        break;
+                    case 3:
+                        priorityImg.setImageResource(R.drawable.zeleni);
+                        break;
+                    default:
+                        priorityImg.setImageResource(R.drawable.sivi);
+                        break;
+                }
+
+                switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))){
+                    case 1 :
+                        doneTasks.addView(taskLayout);
+                        break;
+                    case 0 :
+                        plannedTasks.addView(taskLayout);
+                        break;
+                    default:
+                        break;
+                }
+
+            } while (c.moveToNext());
+        }
+
     }
 
     public boolean insertTask (String ime, String time, String deadline, int priority, int category, int done){
