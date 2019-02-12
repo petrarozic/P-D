@@ -11,6 +11,7 @@ import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContentResolverCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.support.v7.app.AlertDialog;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity
 
     public DBAdapter db;
 
-
+    public DataBase dataBase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -74,40 +75,9 @@ public class MainActivity extends AppCompatActivity
         //********************************************
         //STVARANJE ZADATAKA:
         //********************************************
-        ContentValues values = new ContentValues();
-        values.put("name", "zad1");
-        values.put("time", "VRIJEME1");
-        values.put("deadline", "KRAJNJE_VRIJEME1");
-        values.put("priority", 1);
-        values.put("category", 0);
-        values.put("done", 0);
-
-
-        Uri uri = getContentResolver().insert(
-                Uri.parse("content://hr.math.provider.contprov/task"), values);
-
-        ContentValues values1 = new ContentValues();
-        values1.put("name", "zad2");
-        values1.put("time", "VRIJEME2");
-        values1.put("deadline", "KRAJNJE_VRIJEME2");
-        values1.put("priority", 2);
-        values1.put("category", 0);
-        values1.put("done", 0);
-
-        Uri uri2 = getContentResolver().insert(
-                Uri.parse("content://hr.math.provider.contprov/task"), values1);
-
-        values = new ContentValues();
-        values.put("name", "zad3");
-        values.put("time", "VRIJEME3");
-        values.put("deadline", "KRAJNJE_VRIJEME3");
-        values.put("priority", 2);
-        values.put("category", 0);
-        values.put("done", 1);
-
-        uri = getContentResolver().insert(
-                Uri.parse("content://hr.math.provider.contprov/task"), values);
-
+        insertTask("zad1", "VRIJEME1", "KRAJNJE_VRIJEME1", 1, 0, 0);
+        insertTask("zad2", "VRIJEME2", "KRAJNJE_VRIJEME2", 2, 0, 0);
+        insertTask("zad3", "VRIJEME3", "KRAJNJE_VRIJEME3", 3, 0, 1);
 
         //********************************************
         //DOHVATI ZADATKE:
@@ -121,11 +91,14 @@ public class MainActivity extends AppCompatActivity
             c = cursorLoader.loadInBackground();
         }
 
+        /*
+        //TOAST
         if (c.moveToFirst()) {
             do{
                 DisplayTask(c);
             } while (c.moveToNext());
         }
+         */
 
     }
 
@@ -313,5 +286,22 @@ public class MainActivity extends AppCompatActivity
         //i.putExtra(&quot;DBAdapterObject&quot;, db);
         startActivity(i);
     }
+
+    public boolean insertTask (String ime, String time, String deadline, int priority, int category, int done){
+        //dodati validaciju podataka?
+        ContentValues values = new ContentValues();
+        values.put("name", ime);
+        values.put("time", time);
+        values.put("deadline", deadline);
+        values.put("priority", priority);
+        values.put("category", category);
+        values.put("done", done);
+
+        Uri uri = getContentResolver().insert(
+                Uri.parse("content://hr.math.provider.contprov/task"), values);
+
+        return true;
+    }
+
 }
 
