@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -148,7 +149,9 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
 
 
     public void cancel(View view) {
-        this.finish();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     public void save(View view) {
@@ -166,8 +169,28 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
         }
         else
         {
-            insertTask(name, "VRIJEMEXXX", "KRAJNJE_VRIJEME1", 1, 0, 0);
-            this.finish();
+            TextView deadlineLabel = (TextView) findViewById(R.id.deadlineView);
+            String deadline_ = deadlineLabel.getText().toString();
+            String deadline = "";
+            if(!deadline_.equals(""))
+               deadline = deadline_.substring(6,10) + deadline_.substring(3,5) + deadline_.substring(0,2) + deadline_.substring(12,14) + deadline_.substring(15,17);
+
+            TextView plannedLabel = (TextView) findViewById(R.id.plannedView);
+            String planned_ = plannedLabel.getText().toString();
+            String planned = "";
+            if(!planned_.equals(""))
+                planned = planned_.substring(6,10) + planned_.substring(3,5) + planned_.substring(0,2) + planned_.substring(12,14) + planned_.substring(15,17);
+
+            int priority = 0;
+            Spinner spinner1 = (Spinner)findViewById(R.id.prioritySpinner);
+            String priority_ = spinner1.getSelectedItem().toString();
+            if(!priority_.equals("-"))
+                priority = Integer.parseInt(priority_);
+
+            insertTask(name, planned, deadline, priority, 0, 0);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
     }
 
