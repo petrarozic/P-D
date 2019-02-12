@@ -43,12 +43,27 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
+
         Spinner priority = (Spinner)findViewById(R.id.prioritySpinner);
         String[] items1 = new String[]{"-", "highest", "medium", "lowest"};
+
+        Bundle extras = getIntent().getExtras();
+        String userName;
+
+        if (extras != null) {
+            userName = extras.getString("FLAG");
+
+            if (userName == "edit") {
+                
+            }
+        }
+
+       
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items1);
         priority.setAdapter(adapter1);
 
         Spinner category = (Spinner)findViewById(R.id.categorySpinner);
+
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         category.setAdapter(adapter2);
