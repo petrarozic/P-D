@@ -103,6 +103,7 @@ public class DBAdapter implements Serializable{
         initialValues.put(TASK_PRIORITY, priority);
         initialValues.put(TASK_CATEGORY, category);
         initialValues.put(TASK_DONE, done);
+
         return db.insert(TASK_TABLE, null, initialValues);
     }
 

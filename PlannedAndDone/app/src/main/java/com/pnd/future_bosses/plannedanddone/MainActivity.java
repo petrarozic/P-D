@@ -1,13 +1,16 @@
 package com.pnd.future_bosses.plannedanddone;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
@@ -67,11 +70,92 @@ public class MainActivity extends AppCompatActivity
         db = new DBAdapter(this);
 
 
-        //---add a contact---
+        // Punjenje za probu : Tasks
+
+        ContentValues values = new ContentValues();
+        values.put("name", "zad1");
+        values.put("done", 0);
+        Uri uri = getContentResolver().insert(
+                Uri.parse("content://hr.math.provider.contprov/task"), values);
+
+        // dodaj drugog
+        values.clear();
+        values.put("name", "zad2");
+        values.put("done",1);
+        Uri uri2 = getContentResolver().insert(
+                Uri.parse("content://hr.math.provider.contprov/task"), values);
+
+        // dodaj treceg
+        values.clear();
+        values.put("name", "uciti nesto");
+        values.put("done",1 );
+        uri2 = getContentResolver().insert(
+                Uri.parse("content://hr.math.provider.contprov/task"), values);
+
+        Uri table = Uri.parse(
+                "content://hr.math.provider.contprov/task");
+        // Ispis
+        Cursor c;
+        if (android.os.Build.VERSION.SDK_INT <11) {
+            //---before Honeycomb---
+            c = managedQuery(table, null, null, null, null);
+        } else {
+            //---Honeycomb and later---
+            CursorLoader cursorLoader = new CursorLoader(
+                    this,
+                    table, null, null, null, null);
+            c = cursorLoader.loadInBackground();
+        }
+
+        if (c.moveToFirst()) {
+            do{
+                Toast.makeText(this,
+                        c.getString(c.getColumnIndex(DataBase.TASK_ID)) + ", " +
+                                c.getString(c.getColumnIndex(DataBase.TASK_NAME)),
+                        Toast.LENGTH_SHORT).show();
+            } while (c.moveToNext());
+        }
+
+        // Punjenje za probu : Category
+
+
+        // dodaj kategoriju
+        values.clear();
+        values.put("name", "Faks");
+        uri2 = getContentResolver().insert(
+                Uri.parse("content://hr.math.provider.contprov/category"), values);
+
+        Uri table2 = Uri.parse(
+                "content://hr.math.provider.contprov/category");
+        // Ispis
+        if (android.os.Build.VERSION.SDK_INT <11) {
+            //---before Honeycomb---
+            c = managedQuery(table2, null, null, null, null);
+        } else {
+            //---Honeycomb and later---
+            CursorLoader cursorLoader = new CursorLoader(
+                    this,
+                    table2, null, null, null, null);
+            c = cursorLoader.loadInBackground();
+        }
+
+        if (c.moveToFirst()) {
+            do{
+                Toast.makeText(this,
+                        c.getString(c.getColumnIndex(DataBase.CATEGORY_ID)) + ", " +
+                                c.getString(c.getColumnIndex(DataBase.CATEGORY_NAME)),
+                        Toast.LENGTH_SHORT).show();
+            } while (c.moveToNext());
+        }
+
+
+
+        /*
         db.open();
         long id = db.insertTask("Šetnja psa", "12.3.2019.", "hhh", 1, 3, 1);
         id = db.insertTask("Učiti izračunljivost", "9.2.2019", "hhsdfh", 3, 4, 0);
         id = db.insertTask("Projekti", "9.2.2019", "hhsdfh", 5, 4, 0);
+
 
 
         Cursor cu = db.getAllTasks();
@@ -84,6 +168,7 @@ public class MainActivity extends AppCompatActivity
             } while (cu.moveToNext());
         }
         db.close();
+        */
 
     }
 
@@ -220,10 +305,15 @@ public class MainActivity extends AppCompatActivity
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        db.open();
-                        db.deleteAllCopmletedTasks();
-                        db.close();
-                        Toast.makeText(MainActivity.this, "Completed tasks have ben deleted successfully!", Toast.LENGTH_SHORT).show();
+                        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+                        String where = DataBase.TASK_DONE + "=0";
+
+                        int count = getContentResolver().delete(table, where, null);
+
+                        if(count > 0)
+                            Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_success, Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_not_success, Toast.LENGTH_SHORT).show();
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
     }
@@ -249,10 +339,6 @@ public class MainActivity extends AppCompatActivity
     //uredi kategorije
     public void updateCategoryClick(MenuItem item) {
         Intent i = new Intent(MainActivity.this, EditCategories.class);
-        Bundle b = new Bundle();
-        b.putSerializable("EXTRA_MESSAGE",db);
-        i.putExtras(b);
-        //i.putExtra(&quot;DBAdapterObject&quot;, db);
         startActivity(i);
     }
 }
