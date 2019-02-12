@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContentResolverCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity
 
     public DBAdapter db;
 
+    public DataBase dataBase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -68,25 +72,33 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         db = new DBAdapter(this);
 
+        //********************************************
+        //STVARANJE ZADATAKA:
+        //********************************************
+        insertTask("zad1", "VRIJEME1", "KRAJNJE_VRIJEME1", 1, 0, 0);
+        insertTask("zad2", "VRIJEME2", "KRAJNJE_VRIJEME2", 2, 0, 0);
+        insertTask("zad3", "VRIJEME3", "KRAJNJE_VRIJEME3", 3, 0, 1);
 
-
-        //---add a contact---
-        db.open();
-        long id = db.insertTask("Šetnja psa", "12.3.2019.", "hhh", 1, 3, 1);
-        id = db.insertTask("Učiti izračunljivost", "9.2.2019", "hhsdfh", 3, 4, 0);
-        id = db.insertTask("Projekti", "9.2.2019", "hhsdfh", 5, 4, 0);
-
-
-        Cursor cu = db.getAllTasks();
-
-
-        if (cu.moveToFirst())
-        {
-            do {
-                DisplayTask(cu);
-            } while (cu.moveToNext());
+        //********************************************
+        //DOHVATI ZADATKE:
+        //********************************************
+        Cursor c;
+        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
+        if (android.os.Build.VERSION.SDK_INT <11) {
+            c = managedQuery(table, null, null, null, null);
+        } else {
+            CursorLoader cursorLoader = new CursorLoader(this,table, null, null, null, null);
+            c = cursorLoader.loadInBackground();
         }
-        db.close();
+
+        /*
+        //TOAST
+        if (c.moveToFirst()) {
+            do{
+                DisplayTask(c);
+            } while (c.moveToNext());
+        }
+         */
 
     }
 
@@ -94,29 +106,42 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        db.open();
 
-        Cursor CplannedTasks = db.getAllTasks();
+        //*********************
+        //DOHVATI SVE ZADATKE
+        //*********************
+        Cursor c;
+        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
+        if (android.os.Build.VERSION.SDK_INT <11) {
+            c = managedQuery(table, null, null, null, null);
+        } else {
+            CursorLoader cursorLoader = new CursorLoader(this,table, null, null, null, null);
+            c = cursorLoader.loadInBackground();
+        }
 
+        //*********************
+        //PRIKAZI ZADATKE U MAIN_AC
+        //AKTIVNI & ZAVRSENI
+        //*********************
         LinearLayout plannedTasks = (LinearLayout)findViewById(R.id.plannedTasksLayout);
+        LinearLayout doneTasks = (LinearLayout)findViewById(R.id.doneTasksLayout);
 
-        if (CplannedTasks.moveToFirst()){
+        if (c.moveToFirst()) {
             do{
-                // dohvati definirani xml layout za task
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View taskLayout = inflater.inflate(R.layout.listview_item, null);
 
                 TextView taskName = (TextView) taskLayout.findViewById(R.id.taskName);
-                taskName.setText(CplannedTasks.getString(1));
+                taskName.setText(c.getString(c.getColumnIndex(DataBase.TASK_NAME)));
 
                 TextView taskTime = (TextView) taskLayout.findViewById(R.id.taskDate);
-                taskTime.setText(CplannedTasks.getString(2));
+                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_TIME)));
 
                 TextView taskDeadline = (TextView) taskLayout.findViewById(R.id.taskDeadline);
-                taskTime.setText(CplannedTasks.getString(3));
+                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE)));
 
                 ImageView priorityImg = (ImageView) taskLayout.findViewById((R.id.priorityImg));
-                switch (CplannedTasks.getInt(4)){
+                switch (c.getInt(4)){
                     case 1 :
                         priorityImg.setImageResource(R.drawable.crveni);
                         break;
@@ -131,19 +156,22 @@ public class MainActivity extends AppCompatActivity
                         break;
                 }
 
-                plannedTasks.addView(taskLayout);
+                switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))){
+                    case 1 :
+                        doneTasks.addView(taskLayout);
+                        break;
+                    case 0 :
+                        plannedTasks.addView(taskLayout);
+                        break;
+                    default:
+                        break;
+                }
 
-            }while(CplannedTasks.moveToNext());
+            } while (c.moveToNext());
         }
 
-        Toast.makeText(this,
-                "U onResume",
-                Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "ZAVRSIO onResume", Toast.LENGTH_LONG).show();
     }
-
-
-
-
 
 
     @Override
@@ -258,5 +286,22 @@ public class MainActivity extends AppCompatActivity
         //i.putExtra(&quot;DBAdapterObject&quot;, db);
         startActivity(i);
     }
+
+    public boolean insertTask (String ime, String time, String deadline, int priority, int category, int done){
+        //dodati validaciju podataka?
+        ContentValues values = new ContentValues();
+        values.put("name", ime);
+        values.put("time", time);
+        values.put("deadline", deadline);
+        values.put("priority", priority);
+        values.put("category", category);
+        values.put("done", done);
+
+        Uri uri = getContentResolver().insert(
+                Uri.parse("content://hr.math.provider.contprov/task"), values);
+
+        return true;
+    }
+
 }
 
