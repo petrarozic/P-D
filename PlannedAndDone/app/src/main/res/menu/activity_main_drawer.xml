@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item android:title="Sort">
         <menu>
-            <item android:id="@+id/nav_deadlineDown" android:icon="@drawable/ic_menu_camera"
-                android:title="Deadline : ending soonest" />
-            <item android:id="@+id/nav_deadlineUp" android:icon="@drawable/ic_menu_gallery"
-                android:title="Deadline : ending last" />
-            <item android:id="@+id/nav_plannedDown" android:icon="@drawable/ic_menu_slideshow"
-                android:title="Planned time: ending soonest" />
-            <item android:id="@+id/nav_plannedUp" android:icon="@drawable/ic_menu_manage"
-                android:title="Planned time: ending last" />
-            <item android:id="@+id/nav_priorityDown" android:icon="@drawable/ic_menu_slideshow"
-                android:title="Priority: highest first" />
-            <item android:id="@+id/nav_priorityUp" android:icon="@drawable/ic_menu_manage"
-                android:title="Priority : lowest first" />
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/nav_deadlineDown" android:icon="@drawable/arrow_up"
+                    android:title="Deadline" />
+                <item android:id="@+id/nav_deadlineUp" android:icon="@drawable/arrow_down"
+                    android:title="Deadline" />
+                <item android:id="@+id/nav_plannedDown" android:icon="@drawable/arrow_up"
+                    android:title="Planned time" />
+                <item android:id="@+id/nav_plannedUp" android:icon="@drawable/arrow_down"
+                    android:title="Planned time" />
+                <item android:id="@+id/nav_priorityDown" android:icon="@drawable/arrow_up"
+                    android:title="Priority" />
+                <item android:id="@+id/nav_priorityUp" android:icon="@drawable/arrow_down"
+                    android:title="Priority" />
+            </group>
         </menu>
     </item>
 

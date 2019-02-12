@@ -26,12 +26,9 @@
             android:authorities="hr.math.provider.contprov">
         </provider>
 
-
-
-
-        <activity android:name=".AddTaskActivity"></activity>
-        <activity android:name=".EditCategories"></activity>
-
+        <activity android:name=".AddTaskActivity" />
+        <activity android:name=".EditCategories" />
+        <activity android:name=".Pomodoro"></activity>
     </application>
 
 </manifest>

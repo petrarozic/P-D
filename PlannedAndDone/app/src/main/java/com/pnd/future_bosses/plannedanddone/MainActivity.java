@@ -1,5 +1,6 @@
 package com.pnd.future_bosses.plannedanddone;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,9 +30,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -44,12 +48,12 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        //implements NavigationView.OnNavigationItemSelectedListener
+        {
 
     public DBAdapter db;
     List<Integer> taskID;
 
-    public DataBase dataBase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -73,16 +77,18 @@ public class MainActivity extends AppCompatActivity
         //drawer.setDrawerListener(toggle);
         //toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        db = new DBAdapter(this);
+
+        //za onaj dio koji je zakomentiran i ne koristimo :)
+        //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        //navigationView.setNavigationItemSelectedListener(this);
+
 
         //********************************************
         //STVARANJE ZADATAKA:
         //********************************************
-        insertTask("zad1", "VRIJEME1", "KRAJNJE_VRIJEME1", 1, 0, 0);
-        insertTask("zad2", "VRIJEME2", "KRAJNJE_VRIJEME2", 2, 0, 0);
-        insertTask("zad3", "VRIJEME3", "KRAJNJE_VRIJEME3", 3, 0, 1);
+        //insertTask("zad1", "VRIJEME1", "KRAJNJE_VRIJEME1", 1, 0, 0);
+        //insertTask("zad2", "VRIJEME2", "KRAJNJE_VRIJEME2", 2, 0, 0);
+        //insertTask("zad3", "VRIJEME3", "KRAJNJE_VRIJEME3", 3, 0, 1);
 
         //********************************************
         //DOHVATI ZADATKE:
@@ -143,6 +149,15 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    public void pretraziBazu(View v){
+        Toast.makeText(this, "Klik na PRETRAZI BAZU", Toast.LENGTH_LONG).show();
+        //MenuItem item = (MenuItem)findViewById(R.id.nav_deadlineDown) ;
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -195,6 +210,7 @@ public class MainActivity extends AppCompatActivity
         drawer.openDrawer(Gravity.LEFT);
     }
 
+    /*
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -219,6 +235,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    */
 
     public void deleteAllDone(MenuItem item) {
 
@@ -243,9 +260,6 @@ public class MainActivity extends AppCompatActivity
                 .setNegativeButton(android.R.string.no, null).show();
 
     }
-
-
-
 
     //funkcija za ispis
     public void DisplayTask(Cursor c)
@@ -294,7 +308,6 @@ public class MainActivity extends AppCompatActivity
         if (c.moveToFirst()) {
             do{
                 //DisplayTask(c);
-                // id zadataka
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View taskLayout = inflater.inflate(R.layout.listview_item, null);
@@ -405,6 +418,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+
     public void editTask(View view) {
     }
 
@@ -436,6 +450,11 @@ public class MainActivity extends AppCompatActivity
                 Toast.LENGTH_SHORT).show();
 
         printTasks();
+    }
+
+    public void pomodoro(MenuItem item) {
+        Intent intent = new Intent(MainActivity.this, Pomodoro.class);
+        startActivity(intent);
     }
 }
 
