@@ -348,5 +348,10 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void pomodoro(MenuItem item) {
+        Intent intent = new Intent(MainActivity.this, Pomodoro.class);
+        startActivity(intent);
+
+    }
 }
 

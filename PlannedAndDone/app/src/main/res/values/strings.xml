@@ -25,6 +25,12 @@
     <string name="cancel">Cancel</string>
     <string name="completed_tasks_deleted_success">Completed tasks have been deleted successfully!</string>
     <string name="completed_tasks_deleted_not_success">Sadly you do not have any completed taskss to delete.</string>
+    <string name="Pomodoro">Pomodoro</string>
+    <string name="short_break">Short break</string>
+    <string name="long_break">Long break</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="reset">Reset</string>
 
 
 </resources>
