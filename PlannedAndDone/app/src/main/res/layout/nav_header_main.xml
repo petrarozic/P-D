@@ -13,6 +13,13 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing" app:srcCompat="@android:drawable/sym_def_app_icon" />
 
+    <Button
+        android:id="@+id/buttonPretrazi"
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+        android:onClick="pretraziBazu"
+        android:text="Pretraži" />
+
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing" android:text="Sort and filter"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />

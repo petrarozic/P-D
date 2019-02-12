@@ -54,6 +54,7 @@ public class DataBase extends ContentProvider {
 
     static final int DATABASE_VERSION = 7;
 
+
     static final String TASK_CREATE =
             "create table task (_id integer primary key autoincrement, "
                     + "name text not null, time text, deadline text, priority integer, category integer, done integer);";
