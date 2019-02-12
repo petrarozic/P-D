@@ -52,7 +52,8 @@ public class DataBase extends ContentProvider {
     static final String TASK_TABLE = "task";
     static final String CATEGORY_TABLE = "category";
 
-    static final int DATABASE_VERSION = 6;
+    static final int DATABASE_VERSION = 7;
+
 
     static final String TASK_CREATE =
             "create table task (_id integer primary key autoincrement, "
