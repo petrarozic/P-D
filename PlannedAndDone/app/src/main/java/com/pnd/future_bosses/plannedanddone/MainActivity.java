@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity
         // dodaj kategoriju
         ContentValues values = new ContentValues();
         values.clear();
-        values.put("name", "Faks");
+        values.put("name", "Home");
         Uri uri2 = getContentResolver().insert(
                 Uri.parse("content://hr.math.provider.contprov/category"), values);
 
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity
                 taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_TIME)));
 
                 TextView taskDeadline = (TextView) taskLayout.findViewById(R.id.taskDeadline);
-                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE)));
+                taskDeadline.setText(c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE)));
 
                 ImageView priorityImg = (ImageView) taskLayout.findViewById((R.id.priorityImg));
                 switch (c.getInt(4)){

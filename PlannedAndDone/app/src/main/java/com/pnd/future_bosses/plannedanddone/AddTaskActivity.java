@@ -7,8 +7,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -23,30 +26,46 @@ import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class AddTaskActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     
 
     boolean type = true; // true za deadline, false za planned
     int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
+    List<Integer> arrayID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
-        Spinner priority = (Spinner)findViewById(R.id.spinner1);
-        String[] items1 = new String[]{"-", "1", "2", "3"};
+        Spinner priority = (Spinner)findViewById(R.id.prioritySpinner);
+        String[] items1 = new String[]{"-", "highest", "medium", "lowest"};
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items1);
         priority.setAdapter(adapter1);
 
-        Spinner category = (Spinner)findViewById(R.id.spinner2);
-        String[] items2 = new String[]{"-", "1", "2", "3"};
-
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items2);
+        Spinner category = (Spinner)findViewById(R.id.categorySpinner);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         category.setAdapter(adapter2);
+        adapter2.add("-");
+
+        arrayID = new ArrayList<Integer>();
+        Uri table = Uri.parse( "content://hr.math.provider.contprov/category");
+        CursorLoader cursorLoader = new CursorLoader(this, table, null, null, null, null);
+        Cursor c = cursorLoader.loadInBackground();
+        while (c.moveToNext())
+        {
+
+            adapter2.add(c.getString(c.getColumnIndex(DataBase.CATEGORY_NAME)));
+            arrayID.add(c.getInt(c.getColumnIndex(DataBase.CATEGORY_ID)));
+        }
+
+
 
         (findViewById(R.id.b_d))
                 .setOnClickListener(new View.OnClickListener() {
@@ -181,13 +200,39 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
             if(!planned_.equals(""))
                 planned = planned_.substring(6,10) + planned_.substring(3,5) + planned_.substring(0,2) + planned_.substring(12,14) + planned_.substring(15,17);
 
-            int priority = 0;
+            int priority;
             Spinner spinner1 = (Spinner)findViewById(R.id.prioritySpinner);
             String priority_ = spinner1.getSelectedItem().toString();
-            if(!priority_.equals("-"))
-                priority = Integer.parseInt(priority_);
+            switch(priority_) {
+                case "highest" :
+                    priority = 1;
+                    break;
+                case "medium" :
+                    priority = 2;
+                    break;
+                case "lowest" :
+                    priority = 3;
+                    break;
+                default :
+                    priority = 0;
+            }
 
-            insertTask(name, planned, deadline, priority, 0, 0);
+            Spinner spinner2 = (Spinner)findViewById(R.id.categorySpinner);
+            int position = spinner2.getSelectedItemPosition();
+            int category = 0;
+            if(position != 0)
+                 category = arrayID.get(position - 1);
+
+            insertTask(name, planned, deadline, priority, category, 0);
+
+            /*String where = DataBase.CATEGORY_ID + " LIKE " + category;
+            Uri table = Uri.parse( "content://hr.math.provider.contprov/category");
+            Cursor c = getContentResolver().query(table, new String[]{DataBase.CATEGORY_NAME}, where, null, null);
+            String cat = "";
+            if(c.moveToFirst())
+                 cat = c.getString(0);*/
+
+
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
