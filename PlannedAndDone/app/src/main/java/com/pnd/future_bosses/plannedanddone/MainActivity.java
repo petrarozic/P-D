@@ -17,6 +17,7 @@ import android.support.v4.content.ContentResolverCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.support.v7.app.AlertDialog;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -146,7 +147,7 @@ public class MainActivity extends AppCompatActivity
          */
 
         printTasks();
-    }
+}
 
 
     public void pretraziBazu(View v){
@@ -161,8 +162,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-
-        //Toast.makeText(this, "ZAVRSIO onResume", Toast.LENGTH_LONG).show();
     }
 
 
@@ -311,14 +310,14 @@ public class MainActivity extends AppCompatActivity
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View taskLayout = inflater.inflate(R.layout.listview_item, null);
-
+                taskLayout.setTag(c.getInt(c.getColumnIndex(DataBase.TASK_ID)));
                 CheckBox check = (CheckBox) taskLayout.findViewById((R.id.checkBox));
-                check.setTag(c.getInt(c.getColumnIndex(dataBase.TASK_ID)));
+                check.setTag(c.getInt(c.getColumnIndex(DataBase.TASK_ID)));
 
 
 
                 ImageButton editButton = (ImageButton) taskLayout.findViewById(R.id.editButton);
-                editButton.setTag(c.getInt(c.getColumnIndex(dataBase.TASK_ID)));
+                editButton.setTag(c.getInt(c.getColumnIndex(DataBase.TASK_ID)));
 
                 TextView taskName = (TextView) taskLayout.findViewById(R.id.taskName);
                 taskName.setText(c.getString(c.getColumnIndex(DataBase.TASK_NAME)));
@@ -357,45 +356,30 @@ public class MainActivity extends AppCompatActivity
                         break;
                 }
 
-                check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        // update your model (or other business logic) based on isChecked
 
-                        int doneID =(int) buttonView.getTag();
-                        ContentValues values = new ContentValues();
-                        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
-                        String where = DataBase.TASK_ID + "=" + doneID;
-                        Toast.makeText(getApplicationContext(),
-                                DataBase.TASK_ID + "=" + doneID,
-                                Toast.LENGTH_SHORT).show();
+                // Event handler za long click na task : brisanje zadatka
+                taskLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
 
-                        Cursor c1 = getContentResolver().query(table,
-                                new String[]{DataBase.TASK_ID,DataBase.TASK_NAME, DataBase.TASK_TIME, DataBase.TASK_DEADLINE, DataBase.TASK_PRIORITY, DataBase.TASK_CATEGORY}, where, null, null);
+                        final int  id = (int) ((LinearLayout)v).getTag();
+                        new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.myDialog))
+                                .setTitle("Delete task")
+                                .setMessage("Do you really want to delete this task?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
-                        if(c1.moveToFirst()) {
-                            values.put("name", c1.getString(c1.getColumnIndex(DataBase.TASK_NAME)));
-                            values.put("time", c1.getString(c1.getColumnIndex(DataBase.TASK_TIME)));
-                            values.put("deadline", c1.getString(c1.getColumnIndex(DataBase.TASK_DEADLINE)));
-                            values.put("priority", c1.getInt(c1.getColumnIndex(DataBase.TASK_PRIORITY)));
-                            values.put("category", c1.getInt(c1.getColumnIndex(DataBase.TASK_CATEGORY)));
-/*
-                            if (isChecked){
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
+                                        String where = DataBase.TASK_ID + "=" + id;
+                                        getContentResolver().delete(table, where, null);
+                                        printTasks();
+                                    }})
+                                .setNegativeButton(android.R.string.no, null).show();
 
-                                    values.put("done", 1);
-                                    getContentResolver().update(table, values, where, null);
-
-                            }else{
-
-                                    values.put("done", 0);
-                                    getContentResolver().update(table, values, where, null);
-
-                            }*/
-                        }
-
-
-                        printTasks();
-
+                        return true;
                     }
+
                 });
 
             } while (c.moveToNext());
@@ -423,32 +407,30 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void checkedTask(View view) {
-       /* int doneID = (int)((CheckBox) view).getTag();
+        int doneID = (int) ((CheckBox) view).getTag();
         boolean checked = ((CheckBox) view).isChecked();
         ContentValues values = new ContentValues();
         Uri table = Uri.parse("content://hr.math.provider.contprov/task");
         String where = DataBase.TASK_ID + "=" + doneID;
         Cursor c = getContentResolver().query(table,
-                new String[]{DataBase.TASK_ID,DataBase.TASK_NAME, DataBase.TASK_TIME, DataBase.TASK_DEADLINE, DataBase.TASK_PRIORITY, DataBase.TASK_CATEGORY}, where, null, null);
-        values.put("name", c.getString(1));
-        values.put("time", c.getString(2));
-        values.put("deadline", c.getString(3));
-        values.put("priority", c.getInt(4));
-        values.put("category", c.getInt(5));
-        if (checked){
-            if(c.moveToFirst()) {
+                new String[]{DataBase.TASK_ID, DataBase.TASK_NAME, DataBase.TASK_TIME, DataBase.TASK_DEADLINE, DataBase.TASK_PRIORITY, DataBase.TASK_CATEGORY}, where, null, null);
+        if (c.moveToFirst()) {
+
+            values.put("name", c.getString(1));
+            values.put("time", c.getString(2));
+            values.put("deadline", c.getString(3));
+            values.put("priority", c.getInt(4));
+            values.put("category", c.getInt(5));
+
+            if (checked) {
                 values.put("done", 1);
                 getContentResolver().update(table, values, where, null);
             }
-        }else{
-            values.put("done", 0);
-            getContentResolver().update(table, values, where, null);
-        }*/
-
-        Toast.makeText(this,
-                "U clicku",
-                Toast.LENGTH_SHORT).show();
-
+            else {
+                values.put("done", 0);
+                getContentResolver().update(table, values, where, null);
+            }
+        }
         printTasks();
     }
 
