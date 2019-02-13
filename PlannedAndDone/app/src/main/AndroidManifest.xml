@@ -26,17 +26,17 @@
         <provider
             android:name=".DataBase"
             android:authorities="hr.math.provider.contprov" />
+
         <activity android:name=".AddTaskActivity" />
         <activity android:name=".EditCategories" />
-        <activity android:name=".Pomodoro" />
 
         <!-- za notifikacije -->
-        <receiver android:name=".NotificationBuilder"/>
+        <receiver android:name=".NotificationBuilder" />
 
-        <activity android:name=".Pomodoro"
-            android:configChanges="orientation|screenSize">
-        </activity>
-
+        <activity
+            android:name=".Pomodoro"
+            android:configChanges="orientation|screenSize"></activity>
+        <activity android:name=".FilterAndSortActivity"></activity>
     </application>
 
 </manifest>

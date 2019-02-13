@@ -18,7 +18,7 @@
         android:layout_width="175dp"
         android:layout_height="wrap_content"
         android:onClick="pretraziBazu"
-        android:text="Pretraži" />
+        android:text="Filter &amp; Sort" />
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing" android:text="Sort and filter"
