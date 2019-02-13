@@ -29,7 +29,9 @@
 
         <activity android:name=".AddTaskActivity" />
         <activity android:name=".EditCategories" />
-        <activity android:name=".Pomodoro"></activity>
+        <activity android:name=".Pomodoro"
+            android:configChanges="orientation|screenSize">
+        </activity>
     </application>
 
 </manifest>
