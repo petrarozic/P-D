@@ -1,6 +1,7 @@
 package com.pnd.future_bosses.plannedanddone;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,6 +31,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 
 import android.widget.CheckBox;
@@ -40,6 +42,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -441,5 +445,67 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(MainActivity.this, Pomodoro.class);
         startActivity(intent);
     }
+
+    public void restartActivity() {
+        Intent i = getIntent();
+        this.overridePendingTransition(0, 0);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        this.finish();
+        //restart the activity without animation
+        this.overridePendingTransition(0, 0);
+        this.startActivity(i);
+    }
+
+    String style = "";
+
+    public void choseStyle(MenuItem item) {
+        // custom dialog
+        final String[] grpname = new String[]{"Blue", "Pink", "Orange", "Green"};
+
+
+            AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+            //alt_bld.setIcon(R.drawable.icon);
+            alt_bld.setTitle("Select theme:");
+            alt_bld.setSingleChoiceItems(grpname, -1, new DialogInterface
+                    .OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    Toast.makeText(getApplicationContext(),
+                            grpname[item], Toast.LENGTH_SHORT).show();
+                    style = grpname[item];
+                    Toast.makeText(getApplicationContext(),
+                            "-"+style+"-", Toast.LENGTH_SHORT).show();
+                    switch(style){
+                        case "Blue":
+
+                            setTheme(R.style.LightBlue);
+                            //restartActivity();
+                            break;
+                        case "Pink":
+                            setTheme(R.style.LightPink);
+                            //restartActivity();
+                            break;
+                        case "Orange":
+                            setTheme(R.style.LightOrange);
+                            break;
+                        case "Green":
+                            setTheme(R.style.LightGreen);
+                            break;
+                        default:
+                            break;
+
+                    }
+                    dialog.dismiss();
+
+                }
+            });
+            AlertDialog alert = alt_bld.create();
+            alert.show();
+
+
+
+
+
+    }
+
 }
 

@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     tools:context="com.pnd.future_bosses.plannedanddone.AddTaskActivity"
     android:orientation="vertical"
-    android:layout_margin="20dp">
+    android:layout_margin="20dp"
+    >
 
 
 
