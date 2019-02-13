@@ -37,35 +37,21 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
     boolean type = true; // true za deadline, false za planned
     int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
     List<Integer> arrayID;
+    int taskId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
-
         Spinner priority = (Spinner)findViewById(R.id.prioritySpinner);
         String[] items1 = new String[]{"-", "highest", "medium", "lowest"};
-
-        Bundle extras = getIntent().getExtras();
-        String userName;
-
-        if (extras != null) {
-            userName = extras.getString("FLAG");
-
-            if (userName == "edit") {
-                
-            }
-        }
-
-       
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items1);
         priority.setAdapter(adapter1);
 
-        Spinner category = (Spinner)findViewById(R.id.categorySpinner);
 
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner category = (Spinner)findViewById(R.id.categorySpinner);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1);
         category.setAdapter(adapter2);
         adapter2.add("-");
 
@@ -148,6 +134,59 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
                         datePickerDialog.show();
                     }
                 });
+
+
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null)
+        {
+            String name1 = "", planned1 = "", deadline1 = "", priority1, category1 = "-";
+            int cat;
+
+            taskId = extras.getInt("FLAG");
+            String where = DataBase.TASK_ID + " LIKE " + taskId;
+            Uri table1 = Uri.parse( "content://hr.math.provider.contprov/task");
+            Cursor c1 = getContentResolver().query(table1, new String[]{DataBase.TASK_NAME, DataBase.TASK_TIME, DataBase.TASK_DEADLINE, DataBase.TASK_PRIORITY, DataBase.TASK_CATEGORY }, where, null, null);
+            if(c1.moveToFirst())
+            {
+                name1 = c1.getString(0);
+                planned1 = c1.getString(1);
+                deadline1 = c1.getString(2);
+                switch (c1.getInt(3))
+                {
+                    case 1:
+                        priority1 = "highest";
+                        break;
+                    case 2:
+                        priority1 = "medium";
+                        break;
+                    case 3:
+                        priority1 = "lowest";
+                        break;
+                    default:
+                        priority1 = "-";
+                        break;
+                }
+
+                cat = c1.getInt(4);
+                String where1 = DataBase.CATEGORY_ID + " LIKE " + cat;
+                Cursor c2 = getContentResolver().query(table, new String[]{DataBase.CATEGORY_NAME}, where1, null, null);
+                if(c2.moveToFirst())
+                    category1 = c2.getString(0);
+
+                EditText name1_ = (EditText) findViewById(R.id.name);
+                name1_.setText(name1);
+                TextView deadline1_ = (TextView) findViewById(R.id.deadlineView);
+                deadline1_.setText(deadline1);
+                TextView planned1_ = (TextView) findViewById(R.id.plannedView);
+                planned1_.setText(planned1);
+                Spinner priority1_ = (Spinner) findViewById(R.id.prioritySpinner);
+                priority1_.setSelection(adapter1.getPosition(priority1));
+                Spinner category1_ = (Spinner) findViewById(R.id.categorySpinner);
+                category1_.setSelection(adapter2.getPosition(category1));
+
+            }
+        }
     }
 
 
@@ -238,14 +277,7 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
             if(position != 0)
                  category = arrayID.get(position - 1);
 
-            insertTask(name, planned, deadline, priority, category, 0);
-
-            /*String where = DataBase.CATEGORY_ID + " LIKE " + category;
-            Uri table = Uri.parse( "content://hr.math.provider.contprov/category");
-            Cursor c = getContentResolver().query(table, new String[]{DataBase.CATEGORY_NAME}, where, null, null);
-            String cat = "";
-            if(c.moveToFirst())
-                 cat = c.getString(0);*/
+            updateTask(name, planned, deadline, priority, category, 0);
 
 
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -254,7 +286,7 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
         }
     }
 
-    public boolean insertTask (String ime, String time, String deadline, int priority, int category, int done){
+    public boolean updateTask (String ime, String time, String deadline, int priority, int category, int done){
         ContentValues values = new ContentValues();
         values.put("name", ime);
         values.put("time", time);
@@ -263,8 +295,13 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
         values.put("category", category);
         values.put("done", done);
 
-        Uri uri = getContentResolver().insert(
-                Uri.parse("content://hr.math.provider.contprov/task"), values);
+        if(taskId == -1)
+            getContentResolver().insert(Uri.parse("content://hr.math.provider.contprov/task"), values);
+        else
+        {
+            String where = DataBase.TASK_ID + " LIKE " + taskId;
+            getContentResolver().update(Uri.parse("content://hr.math.provider.contprov/task"), values, where, null);
+        }
 
         return true;
     }
