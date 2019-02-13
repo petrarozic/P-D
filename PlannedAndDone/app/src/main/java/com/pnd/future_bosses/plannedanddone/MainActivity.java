@@ -431,6 +431,23 @@ public class MainActivity extends AppCompatActivity
 
             } while (c.moveToNext());
         }
+
+        if(plannedTasks.getChildCount() == 0) {
+            TextView taskName1 = new TextView(this); //) noPlannedTasks.findViewById(R.id.taskName);
+            taskName1.setText("Get yourself organized and start planning your tasks!");
+            taskName1.setTextSize(20);
+            taskName1.setGravity(Gravity.CENTER);
+            plannedTasks.addView(taskName1);
+        }
+        if(doneTasks.getChildCount() == 0) {
+            TextView taskName2 = new TextView(this); //) noDoneTasks.findViewById(R.id.taskName);
+            taskName2.setTextSize(20);
+            taskName2.setText("This is where all your done tasks will be displayed.");
+            taskName2.setGravity(Gravity.CENTER);
+
+            doneTasks.addView(taskName2);
+
+        }
     }
 
     public boolean insertTask(String ime, String time, String deadline, int priority, int category, int done) {
