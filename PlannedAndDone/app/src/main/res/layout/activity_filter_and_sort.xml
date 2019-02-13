@@ -39,6 +39,7 @@
                 <RadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:id="@+id/sortBy"
                     android:layout_margin="10dp">
                     <RadioButton
                         android:layout_width="match_parent"
@@ -152,11 +153,6 @@
                         <CheckBox
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:id="@+id/deadlineWeek"
-                            android:text="This week"/>
-                        <CheckBox
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
                             android:id="@+id/deadlineMonth"
                             android:text="This month"/>
                     </LinearLayout>
@@ -178,11 +174,6 @@
                             android:layout_height="match_parent"
                             android:id="@+id/plannedDay"
                             android:text="This day "/>
-                        <CheckBox
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/plannedWeek"
-                            android:text="This week"/>
                         <CheckBox
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
