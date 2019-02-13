@@ -2,11 +2,15 @@ package com.pnd.future_bosses.plannedanddone;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+
+import android.app.Dialog;
+
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -40,6 +44,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 
 import android.widget.CheckBox;
@@ -51,6 +56,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -432,6 +439,23 @@ public class MainActivity extends AppCompatActivity
 
             } while (c.moveToNext());
         }
+
+        if(plannedTasks.getChildCount() == 0) {
+            TextView taskName1 = new TextView(this); //) noPlannedTasks.findViewById(R.id.taskName);
+            taskName1.setText("Get yourself organized and start planning your tasks!");
+            taskName1.setTextSize(20);
+            taskName1.setGravity(Gravity.CENTER);
+            plannedTasks.addView(taskName1);
+        }
+        if(doneTasks.getChildCount() == 0) {
+            TextView taskName2 = new TextView(this); //) noDoneTasks.findViewById(R.id.taskName);
+            taskName2.setTextSize(20);
+            taskName2.setText("This is where all your done tasks will be displayed.");
+            taskName2.setGravity(Gravity.CENTER);
+
+            doneTasks.addView(taskName2);
+
+        }
     }
 
     public boolean insertTask(String ime, String time, String deadline, int priority, int category, int done) {
@@ -491,6 +515,67 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    public void restartActivity() {
+        Intent i = getIntent();
+        this.overridePendingTransition(0, 0);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        this.finish();
+        //restart the activity without animation
+        this.overridePendingTransition(0, 0);
+        this.startActivity(i);
+    }
+
+    String style = "";
+
+    public void choseStyle(MenuItem item) {
+        // custom dialog
+        final String[] grpname = new String[]{"Blue", "Pink", "Orange", "Green"};
+
+
+            AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+            //alt_bld.setIcon(R.drawable.icon);
+            alt_bld.setTitle("Select theme:");
+            alt_bld.setSingleChoiceItems(grpname, -1, new DialogInterface
+                    .OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    Toast.makeText(getApplicationContext(),
+                            grpname[item], Toast.LENGTH_SHORT).show();
+                    style = grpname[item];
+                    Toast.makeText(getApplicationContext(),
+                            "-"+style+"-", Toast.LENGTH_SHORT).show();
+                    switch(style){
+                        case "Blue":
+
+                            setTheme(R.style.LightBlue);
+                            //restartActivity();
+                            break;
+                        case "Pink":
+                            setTheme(R.style.LightPink);
+                            //restartActivity();
+                            break;
+                        case "Orange":
+                            setTheme(R.style.LightOrange);
+                            break;
+                        case "Green":
+                            setTheme(R.style.LightGreen);
+                            break;
+                        default:
+                            break;
+
+                    }
+                    dialog.dismiss();
+
+                }
+            });
+            AlertDialog alert = alt_bld.create();
+            alert.show();
+
+
+
+
+
+
+
     public void filterAndSort(View view){
         Intent intent = new Intent(MainActivity.this, FilterAndSortActivity.class);
         startActivity(intent);
@@ -525,6 +610,7 @@ public class MainActivity extends AppCompatActivity
             PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
             am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         }
+
     }
 
 }
