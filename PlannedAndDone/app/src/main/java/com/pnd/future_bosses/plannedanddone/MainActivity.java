@@ -268,6 +268,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
+        //sljedeca dva retka otvaraju sideBar
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -506,6 +507,13 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+
+    public void filterAndSort(View view){
+        Intent intent = new Intent(MainActivity.this, FilterAndSortActivity.class);
+        startActivity(intent);
+
+    }
+
     public void manageNotifications(MenuItem item) {
         if (item.isChecked()){
             item.setChecked(false);
@@ -535,5 +543,6 @@ public class MainActivity extends AppCompatActivity
             am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         }
     }
+
 }
 

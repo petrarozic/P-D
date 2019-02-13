@@ -128,7 +128,9 @@ public class TaskActivity extends AppCompatActivity {
 
         // Query
         where = TaskProvider.TASK_NAME + " LIKE " + "'petra'";
-        c = getContentResolver().query(table, new String[]{TaskProvider.TASK_ID,TaskProvider.TASK_NAME, TaskProvider.TASK_TIME}, where, null, "time DESC");
+        c = getContentResolver().query(table,
+                new String[]{TaskProvider.TASK_ID,TaskProvider.TASK_NAME, TaskProvider.TASK_TIME},
+                 where, null, "time DESC");
 
         Toast.makeText(this, "Query zavrsio",Toast.LENGTH_SHORT).show();
 
