@@ -532,43 +532,44 @@ public class MainActivity extends AppCompatActivity
         final String[] grpname = new String[]{"Blue", "Pink", "Orange", "Green"};
 
 
-            AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
-            //alt_bld.setIcon(R.drawable.icon);
-            alt_bld.setTitle("Select theme:");
-            alt_bld.setSingleChoiceItems(grpname, -1, new DialogInterface
-                    .OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    Toast.makeText(getApplicationContext(),
-                            grpname[item], Toast.LENGTH_SHORT).show();
-                    style = grpname[item];
-                    Toast.makeText(getApplicationContext(),
-                            "-"+style+"-", Toast.LENGTH_SHORT).show();
-                    switch(style){
-                        case "Blue":
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+        //alt_bld.setIcon(R.drawable.icon);
+        alt_bld.setTitle("Select theme:");
+        alt_bld.setSingleChoiceItems(grpname, -1, new DialogInterface
+                .OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                Toast.makeText(getApplicationContext(),
+                        grpname[item], Toast.LENGTH_SHORT).show();
+                style = grpname[item];
+                Toast.makeText(getApplicationContext(),
+                        "-" + style + "-", Toast.LENGTH_SHORT).show();
+                switch (style) {
+                    case "Blue":
 
-                            setTheme(R.style.LightBlue);
-                            //restartActivity();
-                            break;
-                        case "Pink":
-                            setTheme(R.style.LightPink);
-                            //restartActivity();
-                            break;
-                        case "Orange":
-                            setTheme(R.style.LightOrange);
-                            break;
-                        case "Green":
-                            setTheme(R.style.LightGreen);
-                            break;
-                        default:
-                            break;
-
-                    }
-                    dialog.dismiss();
+                        setTheme(R.style.LightBlue);
+                        //restartActivity();
+                        break;
+                    case "Pink":
+                        setTheme(R.style.LightPink);
+                        //restartActivity();
+                        break;
+                    case "Orange":
+                        setTheme(R.style.LightOrange);
+                        break;
+                    case "Green":
+                        setTheme(R.style.LightGreen);
+                        break;
+                    default:
+                        break;
 
                 }
-            });
-            AlertDialog alert = alt_bld.create();
-            alert.show();
+                dialog.dismiss();
+
+            }
+        });
+        AlertDialog alert = alt_bld.create();
+        alert.show();
+    }
 
 
 

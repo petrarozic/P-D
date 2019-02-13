@@ -25,7 +25,7 @@ public class FilterAndSortActivity extends AppCompatActivity {
 
     public void searchAndSort(View view){
 
-        Log.e("Usao sam","");
+        Log.e("NASLOV","Usao sam");
         String where = null;
         String priority = null;
         String deadline = null;
@@ -65,7 +65,7 @@ public class FilterAndSortActivity extends AppCompatActivity {
 
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             if (day < 10) datum += "0" +  String.valueOf(day);
-            else  datum = String.valueOf(day);
+            else  datum += String.valueOf(day);
 
             deadline =  DataBase.TASK_DEADLINE + " LIKE '" + datum + "%'";
         }
@@ -102,7 +102,7 @@ public class FilterAndSortActivity extends AppCompatActivity {
 
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             if (day < 10) datum += "0" +  String.valueOf(day);
-            else  datum = String.valueOf(day);
+            else  datum += String.valueOf(day);
 
             plannedTime =  DataBase.TASK_TIME + " LIKE '" + datum + "%'";
         }
@@ -166,15 +166,17 @@ public class FilterAndSortActivity extends AppCompatActivity {
                 sortBy = DataBase.TASK_TIME + " ASC";
         }
 
-        Log.e("ERROR- where", where);
-        Log.e("ERROR- sortBy", sortBy);
+        if ( where != null ){
+            Log.e("ERROR- where", where);
+            Log.e("ERROR- sortBy", sortBy);
+            //KREIRANJE UPITA
+            Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+            Cursor c = getContentResolver().query(table,
+                    new String[]{DataBase.TASK_NAME, DataBase.TASK_TIME, DataBase.TASK_DEADLINE, DataBase.TASK_PRIORITY, DataBase.TASK_CATEGORY, DataBase.TASK_DONE},
+                    where, null, sortBy);
+        }
 
 
-        //KREIRANJE UPITA
-        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
-        Cursor c = getContentResolver().query(table,
-                new String[]{DataBase.TASK_NAME, DataBase.TASK_TIME, DataBase.TASK_DEADLINE, DataBase.TASK_PRIORITY, DataBase.TASK_CATEGORY, DataBase.TASK_DONE},
-                where, null, sortBy);
 
 
         //ISPISI IH U MAIN_AC.....
