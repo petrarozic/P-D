@@ -33,6 +33,9 @@
         <!-- za notifikacije -->
         <receiver android:name=".NotificationBuilder"/>
 
+        <activity android:name=".Pomodoro"
+            android:configChanges="orientation|screenSize">
+        </activity>
 
     </application>
 

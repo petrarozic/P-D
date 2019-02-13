@@ -8,10 +8,17 @@
     android:layout_height="match_parent"
     tools:context="com.pnd.future_bosses.plannedanddone.Pomodoro"
     android:orientation="vertical">
+ <ScrollView
+     android:layout_width="match_parent"
+     android:layout_height="match_parent">
 
+ <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="370dp"
+        android:layout_width="match_parent"
         android:layout_height="58dp"
         android:orientation="horizontal"
         tools:layout_editor_absoluteX="7dp"
@@ -77,48 +84,67 @@
             android:textSize="60dp"
             android:textStyle="bold" />
     </LinearLayout>
+    <LinearLayout
+
+                android:id="@+id/linearLayout7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="50dp">
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/youWon"
+
+                    android:textStyle="bold" />
+
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="213dp"
         android:layout_height="166dp"
-        app:srcCompat="@drawable/pomidor"
-        android:layout_gravity="center|bottom" />
+
+        android:layout_gravity="center|bottom"
+        android:layout_weight="0.29" />
 
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
-        android:orientation="horizontal"
-        android:layout_weight="1"
         android:layout_marginBottom="50dp"
-        >
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/button11"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="@string/start"
             android:layout_gravity="center|bottom"
-            android:onClick="stratTimer"/>
+            android:onClick="stratTimer"
+            android:text="@string/start" />
 
         <Button
             android:id="@+id/button12"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="@string/pause"
             android:layout_gravity="center|bottom"
-            android:onClick="pauseTimer"/>
+            android:onClick="pauseTimer"
+            android:text="@string/pause" />
 
         <Button
             android:id="@+id/button13"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="@string/reset"
             android:layout_gravity="center|bottom"
-            android:onClick="resetTimer"/>
+            android:onClick="resetTimer"
+            android:text="@string/reset" />
     </LinearLayout>
-
-
-</LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+    </LinearLayout>

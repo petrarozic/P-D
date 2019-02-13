@@ -2,11 +2,14 @@ package com.pnd.future_bosses.plannedanddone;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.concurrent.TimeUnit;
@@ -14,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class Pomodoro extends AppCompatActivity {
 
     String ms, ss;
-    int timeMin = 0;
+    int timeMin = 25;
     int timeSec = 0;
     CountDownTimer ti;
     boolean isPaused = false;
@@ -24,6 +27,18 @@ public class Pomodoro extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pomodoro);
+        setTimer();
+        ImageView im = (ImageView) findViewById( R.id.imageView3 );
+        setImage(im);
+    }
+
+    private void resetColor(){
+        TextView m = (TextView)findViewById(R.id.minutes);
+        TextView s = (TextView)findViewById(R.id.seconds);
+        int c = getResources().getColor(R.color.greenPomodoro);
+        ((TextView) findViewById( R.id.col )).setTextColor(c);
+        m.setTextColor(c);
+        s.setTextColor(c);
     }
 
     public void pomoLong(View view) {
@@ -31,7 +46,11 @@ public class Pomodoro extends AppCompatActivity {
         if(ti != null)
             ti.cancel();
         timeMin = 10;
+        isPaused = false;
+        resetColor();
         setTimer();
+        ImageView im = (ImageView) findViewById( R.id.imageView3 );
+        setImage(im);
     }
 
     public void pomoShort(View view) {
@@ -39,7 +58,11 @@ public class Pomodoro extends AppCompatActivity {
         if(ti != null)
             ti.cancel();
         timeMin = 5;
+        isPaused = false;
+        resetColor();
         setTimer();
+        ImageView im = (ImageView) findViewById( R.id.imageView3 );
+        setImage(im);
     }
 
     public void pomoWork(View view) {
@@ -47,7 +70,11 @@ public class Pomodoro extends AppCompatActivity {
         if(ti != null)
             ti.cancel();
         timeMin = 25;
+        isPaused = false;
+        resetColor();
         setTimer();
+        ImageView im = (ImageView) findViewById( R.id.imageView3 );
+        setImage(im);
     }
 
     private void setTimer(){
@@ -78,6 +105,7 @@ public class Pomodoro extends AppCompatActivity {
         if(ti != null)
             ti.cancel();
         setTimer();
+        resetColor();
     }
 
     public void pauseTimer(View view) {
@@ -88,6 +116,17 @@ public class Pomodoro extends AppCompatActivity {
         }
     }
 
+    private void setImage(ImageView im){
+
+        if(timeMin == 25){
+            //crtaj popodora
+            im.setBackgroundResource(R.drawable.pomidor);
+        }
+        else{
+            //crtaj potato
+            im.setBackgroundResource(R.drawable.potato);
+        }
+    }
     public void stratTimer(View view) {
 
 
@@ -98,20 +137,20 @@ public class Pomodoro extends AppCompatActivity {
         }
         else{
             timeR = timeMin * 60000;
+            ImageView im = (ImageView) findViewById( R.id.imageView3 );
+            setImage(im);
         }
 
 
         //inace pokreni timer od zadanog vremena
         final TextView m = (TextView) findViewById( R.id.minutes );
         final TextView s = (TextView) findViewById( R.id.seconds );
-        ((TextView) findViewById( R.id.col )).setTextColor(Color.RED);
-        m.setTextColor(Color.GREEN);
-        s.setTextColor(Color.GREEN);
+        resetColor();
 
         if(ti != null)
             ti.cancel();
 
-        ti = new CountDownTimer(timeR, 1000) { // adjust the milli seconds here
+        ti = new CountDownTimer(timeR, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 timeR = millisUntilFinished;
@@ -139,10 +178,16 @@ public class Pomodoro extends AppCompatActivity {
                 ((TextView) findViewById( R.id.col )).setTextColor(Color.RED);
                 m.setTextColor(Color.RED);
                 s.setTextColor(Color.RED);
+                ImageView image = new ImageView(Pomodoro.this);
+                setImage(image);
+
+                LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(60,60);
+                image.setLayoutParams(params);
+                image.setAdjustViewBounds(true);
+                ((LinearLayout) findViewById( R.id.linearLayout7 )).addView(image);
             }
         }.start();
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 500 milliseconds
         v.vibrate(500);
     }
 }
