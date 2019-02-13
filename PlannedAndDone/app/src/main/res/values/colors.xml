@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryDark">#17215e</color>
+    <color name="colorAccent">#3f51b5</color>
     <color name="greenPomodoro">#ff669900</color>
+    <color name="pinkPrimary">#d25b84</color>
+    <color name="pinkPinkPrimaryDark">#a72552</color>
+    <color name="pinkAccent">#7f3e55</color>
+    <color name="accent_material_dark">#546595</color>
+    <color name="accent_material_light">#f9b564</color>
+    <color name="primary_material_light">#faae3e</color>
+    <color name="primary_dark_material_light">#fb6c3f</color>
 </resources>
