@@ -1,18 +1,27 @@
 package com.pnd.future_bosses.plannedanddone;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContentResolverCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.ResourceCursorAdapter;
@@ -44,16 +53,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-
 
 
 public class MainActivity extends AppCompatActivity
         //implements NavigationView.OnNavigationItemSelectedListener
-        {
+{
 
     public DBAdapter db;
     List<Integer> taskID;
+    final public int notificationID = 13;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +73,17 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // notifikacije :
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 13);
+        calendar.set(Calendar.MINUTE, 42);
+        calendar.set(Calendar.SECOND, 0);
+        Intent intent1 = new Intent(MainActivity.this, NotificationBuilder.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager am = (AlarmManager) MainActivity.this.getSystemService(MainActivity.this.ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -95,11 +117,11 @@ public class MainActivity extends AppCompatActivity
         //DOHVATI ZADATKE:
         //********************************************
         Cursor c;
-        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
-        if (android.os.Build.VERSION.SDK_INT <11) {
+        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+        if (android.os.Build.VERSION.SDK_INT < 11) {
             c = managedQuery(table, null, null, null, null);
         } else {
-            CursorLoader cursorLoader = new CursorLoader(this,table, null, null, null, null);
+            CursorLoader cursorLoader = new CursorLoader(this, table, null, null, null, null);
             c = cursorLoader.loadInBackground();
         }
 
@@ -115,7 +137,7 @@ public class MainActivity extends AppCompatActivity
         Uri table2 = Uri.parse(
                 "content://hr.math.provider.contprov/category");
         // Ispis
-        if (android.os.Build.VERSION.SDK_INT <11) {
+        if (android.os.Build.VERSION.SDK_INT < 11) {
             //---before Honeycomb---
             c = managedQuery(table2, null, null, null, null);
         } else {
@@ -147,10 +169,10 @@ public class MainActivity extends AppCompatActivity
          */
 
         printTasks();
-}
+    }
 
 
-    public void pretraziBazu(View v){
+    public void pretraziBazu(View v) {
         Toast.makeText(this, "Klik na PRETRAZI BAZU", Toast.LENGTH_LONG).show();
         //MenuItem item = (MenuItem)findViewById(R.id.nav_deadlineDown) ;
 
@@ -250,19 +272,19 @@ public class MainActivity extends AppCompatActivity
 
                         int count = getContentResolver().delete(table, where, null);
 
-                        if(count > 0)
+                        if (count > 0)
                             Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_success, Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_not_success, Toast.LENGTH_SHORT).show();
                         printTasks();
-                    }})
+                    }
+                })
                 .setNegativeButton(android.R.string.no, null).show();
 
     }
 
     //funkcija za ispis
-    public void DisplayTask(Cursor c)
-    {
+    public void DisplayTask(Cursor c) {
         Toast.makeText(this,
                 "id: " + c.getString(0) + "\n" +
                         "Name: " + c.getString(1) + "\n" +
@@ -270,8 +292,8 @@ public class MainActivity extends AppCompatActivity
                         "deadline: " + c.getString(3) + "\n" +
                         "category: " + c.getString(4) + "\n" +
                         "priority  " + c.getString(5) +
-                        "Name: " + c.getString(1) + "\n" ,
-                        //"time:  " + c.getString(2),
+                        "Name: " + c.getString(1) + "\n",
+                //"time:  " + c.getString(2),
                 Toast.LENGTH_LONG).show();
     }
 
@@ -281,17 +303,17 @@ public class MainActivity extends AppCompatActivity
         startActivity(i);
     }
 
-    public void printTasks(){
+    public void printTasks() {
         //*********************
         //DOHVATI SVE ZADATKE
         //*********************
         Cursor c;
-        taskID= new ArrayList<Integer>();
-        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
-        if (android.os.Build.VERSION.SDK_INT <11) {
+        taskID = new ArrayList<Integer>();
+        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+        if (android.os.Build.VERSION.SDK_INT < 11) {
             c = managedQuery(table, null, null, null, null);
         } else {
-            CursorLoader cursorLoader = new CursorLoader(this,table, null, null, null, null);
+            CursorLoader cursorLoader = new CursorLoader(this, table, null, null, null, null);
             c = cursorLoader.loadInBackground();
         }
 
@@ -299,13 +321,13 @@ public class MainActivity extends AppCompatActivity
         //PRIKAZI ZADATKE U MAIN_AC
         //AKTIVNI & ZAVRSENI
         //*********************
-        LinearLayout plannedTasks = (LinearLayout)findViewById(R.id.plannedTasksLayout);
+        LinearLayout plannedTasks = (LinearLayout) findViewById(R.id.plannedTasksLayout);
         plannedTasks.removeAllViews();
-        LinearLayout doneTasks = (LinearLayout)findViewById(R.id.doneTasksLayout);
+        LinearLayout doneTasks = (LinearLayout) findViewById(R.id.doneTasksLayout);
         doneTasks.removeAllViews();
 
         if (c.moveToFirst()) {
-            do{
+            do {
                 //DisplayTask(c);
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -313,7 +335,6 @@ public class MainActivity extends AppCompatActivity
                 taskLayout.setTag(c.getInt(c.getColumnIndex(DataBase.TASK_ID)));
                 CheckBox check = (CheckBox) taskLayout.findViewById((R.id.checkBox));
                 check.setTag(c.getInt(c.getColumnIndex(DataBase.TASK_ID)));
-
 
 
                 ImageButton editButton = (ImageButton) taskLayout.findViewById(R.id.editButton);
@@ -329,7 +350,7 @@ public class MainActivity extends AppCompatActivity
                 taskDeadline.setText(c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE)));
 
                 ImageView priorityImg = (ImageView) taskLayout.findViewById((R.id.priorityImg));
-                switch (c.getInt(4)){
+                switch (c.getInt(4)) {
                     case 1:
                         priorityImg.setImageResource(R.drawable.crveni);
                         break;
@@ -344,12 +365,12 @@ public class MainActivity extends AppCompatActivity
                         break;
                 }
 
-                switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))){
-                    case 1 :
+                switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))) {
+                    case 1:
                         check.setChecked(true);
                         doneTasks.addView(taskLayout);
                         break;
-                    case 0 :
+                    case 0:
                         plannedTasks.addView(taskLayout);
                         break;
                     default:
@@ -362,7 +383,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public boolean onLongClick(View v) {
 
-                        final int  id = (int) ((LinearLayout)v).getTag();
+                        final int id = (int) ((LinearLayout) v).getTag();
                         new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.myDialog))
                                 .setTitle("Delete task")
                                 .setMessage("Do you really want to delete this task?")
@@ -370,11 +391,12 @@ public class MainActivity extends AppCompatActivity
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
+                                        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
                                         String where = DataBase.TASK_ID + "=" + id;
                                         getContentResolver().delete(table, where, null);
                                         printTasks();
-                                    }})
+                                    }
+                                })
                                 .setNegativeButton(android.R.string.no, null).show();
 
                         return true;
@@ -386,7 +408,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public boolean insertTask (String ime, String time, String deadline, int priority, int category, int done){
+    public boolean insertTask(String ime, String time, String deadline, int priority, int category, int done) {
         //dodati validaciju podataka?
         ContentValues values = new ContentValues();
         values.put("name", ime);
@@ -428,8 +450,7 @@ public class MainActivity extends AppCompatActivity
             if (checked) {
                 values.put("done", 1);
                 getContentResolver().update(table, values, where, null);
-            }
-            else {
+            } else {
                 values.put("done", 0);
                 getContentResolver().update(table, values, where, null);
             }
@@ -441,5 +462,6 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(MainActivity.this, Pomodoro.class);
         startActivity(intent);
     }
+
 }
 
