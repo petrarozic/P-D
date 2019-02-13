@@ -1,23 +1,36 @@
 package com.pnd.future_bosses.plannedanddone;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+
 import android.app.Dialog;
+
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContentResolverCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,6 +49,7 @@ import android.widget.ArrayAdapter;
 
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import android.widget.Button;
@@ -46,18 +60,21 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-
 
 
 public class MainActivity extends AppCompatActivity
         //implements NavigationView.OnNavigationItemSelectedListener
-        {
+{
 
     public DBAdapter db;
     List<Integer> taskID;
+    final public int notificationID = 13;
+    AlarmManager am;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +83,28 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // notifikacije :
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        Intent intent1 = new Intent(MainActivity.this, NotificationBuilder.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Calendar now = Calendar.getInstance();
+        now.setTimeInMillis(System.currentTimeMillis());
+        int curHr = now.get(Calendar.HOUR_OF_DAY);
+        int curMin = now.get(Calendar.MINUTE);
+        if ((curHr > 9)||(curHr == 9 && curMin > 0))
+        {
+                calendar.add(Calendar.DATE, 1);
+        }
+
+
+        am = (AlarmManager) MainActivity.this.getSystemService(MainActivity.this.ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -99,11 +138,11 @@ public class MainActivity extends AppCompatActivity
         //DOHVATI ZADATKE:
         //********************************************
         Cursor c;
-        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
-        if (android.os.Build.VERSION.SDK_INT <11) {
+        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+        if (android.os.Build.VERSION.SDK_INT < 11) {
             c = managedQuery(table, null, null, null, null);
         } else {
-            CursorLoader cursorLoader = new CursorLoader(this,table, null, null, null, null);
+            CursorLoader cursorLoader = new CursorLoader(this, table, null, null, null, null);
             c = cursorLoader.loadInBackground();
         }
 
@@ -119,7 +158,7 @@ public class MainActivity extends AppCompatActivity
         Uri table2 = Uri.parse(
                 "content://hr.math.provider.contprov/category");
         // Ispis
-        if (android.os.Build.VERSION.SDK_INT <11) {
+        if (android.os.Build.VERSION.SDK_INT < 11) {
             //---before Honeycomb---
             c = managedQuery(table2, null, null, null, null);
         } else {
@@ -151,10 +190,10 @@ public class MainActivity extends AppCompatActivity
          */
 
         printTasks();
-}
+    }
 
 
-    public void pretraziBazu(View v){
+    public void pretraziBazu(View v) {
         Toast.makeText(this, "Klik na PRETRAZI BAZU", Toast.LENGTH_LONG).show();
         //MenuItem item = (MenuItem)findViewById(R.id.nav_deadlineDown) ;
 
@@ -194,10 +233,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_category) {
+        if (id == R.id.action_notifications) {
+
             return true;
         }
-*/
+
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -234,6 +275,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
+        //sljedeca dva retka otvaraju sideBar
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -254,19 +296,19 @@ public class MainActivity extends AppCompatActivity
 
                         int count = getContentResolver().delete(table, where, null);
 
-                        if(count > 0)
+                        if (count > 0)
                             Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_success, Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_not_success, Toast.LENGTH_SHORT).show();
                         printTasks();
-                    }})
+                    }
+                })
                 .setNegativeButton(android.R.string.no, null).show();
 
     }
 
     //funkcija za ispis
-    public void DisplayTask(Cursor c)
-    {
+    public void DisplayTask(Cursor c) {
         Toast.makeText(this,
                 "id: " + c.getString(0) + "\n" +
                         "Name: " + c.getString(1) + "\n" +
@@ -274,8 +316,8 @@ public class MainActivity extends AppCompatActivity
                         "deadline: " + c.getString(3) + "\n" +
                         "category: " + c.getString(4) + "\n" +
                         "priority  " + c.getString(5) +
-                        "Name: " + c.getString(1) + "\n" ,
-                        //"time:  " + c.getString(2),
+                        "Name: " + c.getString(1) + "\n",
+                //"time:  " + c.getString(2),
                 Toast.LENGTH_LONG).show();
     }
 
@@ -285,17 +327,17 @@ public class MainActivity extends AppCompatActivity
         startActivity(i);
     }
 
-    public void printTasks(){
+    public void printTasks() {
         //*********************
         //DOHVATI SVE ZADATKE
         //*********************
         Cursor c;
-        taskID= new ArrayList<Integer>();
-        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
-        if (android.os.Build.VERSION.SDK_INT <11) {
+        taskID = new ArrayList<Integer>();
+        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+        if (android.os.Build.VERSION.SDK_INT < 11) {
             c = managedQuery(table, null, null, null, null);
         } else {
-            CursorLoader cursorLoader = new CursorLoader(this,table, null, null, null, null);
+            CursorLoader cursorLoader = new CursorLoader(this, table, null, null, null, null);
             c = cursorLoader.loadInBackground();
         }
 
@@ -303,13 +345,13 @@ public class MainActivity extends AppCompatActivity
         //PRIKAZI ZADATKE U MAIN_AC
         //AKTIVNI & ZAVRSENI
         //*********************
-        LinearLayout plannedTasks = (LinearLayout)findViewById(R.id.plannedTasksLayout);
+        LinearLayout plannedTasks = (LinearLayout) findViewById(R.id.plannedTasksLayout);
         plannedTasks.removeAllViews();
-        LinearLayout doneTasks = (LinearLayout)findViewById(R.id.doneTasksLayout);
+        LinearLayout doneTasks = (LinearLayout) findViewById(R.id.doneTasksLayout);
         doneTasks.removeAllViews();
 
         if (c.moveToFirst()) {
-            do{
+            do {
                 //DisplayTask(c);
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -319,7 +361,6 @@ public class MainActivity extends AppCompatActivity
                 check.setTag(c.getInt(c.getColumnIndex(DataBase.TASK_ID)));
 
 
-
                 ImageButton editButton = (ImageButton) taskLayout.findViewById(R.id.editButton);
                 editButton.setTag(c.getInt(c.getColumnIndex(DataBase.TASK_ID)));
 
@@ -327,13 +368,21 @@ public class MainActivity extends AppCompatActivity
                 taskName.setText(c.getString(c.getColumnIndex(DataBase.TASK_NAME)));
 
                 TextView taskTime = (TextView) taskLayout.findViewById(R.id.taskDate);
-                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_TIME)));
+                String planned_ = c.getString(c.getColumnIndex(DataBase.TASK_TIME));
+                String planned = "-";
+                if(!planned_.equals(""))
+                     planned = planned_.substring(6,8) + "/" + planned_.substring(4,6) + "/" + planned_.substring(0,4) + ", " + planned_.substring(8,10) + ":" + planned_.substring(10,12);
+                taskTime.setText(taskTime.getText() + planned);
 
                 TextView taskDeadline = (TextView) taskLayout.findViewById(R.id.taskDeadline);
-                taskDeadline.setText(c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE)));
+                String deadline_ = c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE));
+                String deadline = "-";
+                if(!deadline_.equals(""))
+                    deadline = deadline_.substring(6,8) + "/" + deadline_.substring(4,6) + "/" + deadline_.substring(0,4) + ", " + deadline_.substring(8,10) + ":" + deadline_.substring(10,12);
+                taskDeadline.setText(taskDeadline.getText() + deadline);
 
                 ImageView priorityImg = (ImageView) taskLayout.findViewById((R.id.priorityImg));
-                switch (c.getInt(4)){
+                switch (c.getInt(4)) {
                     case 1:
                         priorityImg.setImageResource(R.drawable.crveni);
                         break;
@@ -348,12 +397,13 @@ public class MainActivity extends AppCompatActivity
                         break;
                 }
 
-                switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))){
-                    case 1 :
+                switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))) {
+                    case 1:
+                        editButton.setEnabled(false);
                         check.setChecked(true);
                         doneTasks.addView(taskLayout);
                         break;
-                    case 0 :
+                    case 0:
                         plannedTasks.addView(taskLayout);
                         break;
                     default:
@@ -366,7 +416,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public boolean onLongClick(View v) {
 
-                        final int  id = (int) ((LinearLayout)v).getTag();
+                        final int id = (int) ((LinearLayout) v).getTag();
                         new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.myDialog))
                                 .setTitle("Delete task")
                                 .setMessage("Do you really want to delete this task?")
@@ -374,11 +424,12 @@ public class MainActivity extends AppCompatActivity
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        Uri table = Uri.parse( "content://hr.math.provider.contprov/task");
+                                        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
                                         String where = DataBase.TASK_ID + "=" + id;
                                         getContentResolver().delete(table, where, null);
                                         printTasks();
-                                    }})
+                                    }
+                                })
                                 .setNegativeButton(android.R.string.no, null).show();
 
                         return true;
@@ -388,9 +439,26 @@ public class MainActivity extends AppCompatActivity
 
             } while (c.moveToNext());
         }
+
+        if(plannedTasks.getChildCount() == 0) {
+            TextView taskName1 = new TextView(this); //) noPlannedTasks.findViewById(R.id.taskName);
+            taskName1.setText("Get yourself organized and start planning your tasks!");
+            taskName1.setTextSize(20);
+            taskName1.setGravity(Gravity.CENTER);
+            plannedTasks.addView(taskName1);
+        }
+        if(doneTasks.getChildCount() == 0) {
+            TextView taskName2 = new TextView(this); //) noDoneTasks.findViewById(R.id.taskName);
+            taskName2.setTextSize(20);
+            taskName2.setText("This is where all your done tasks will be displayed.");
+            taskName2.setGravity(Gravity.CENTER);
+
+            doneTasks.addView(taskName2);
+
+        }
     }
 
-    public boolean insertTask (String ime, String time, String deadline, int priority, int category, int done){
+    public boolean insertTask(String ime, String time, String deadline, int priority, int category, int done) {
         //dodati validaciju podataka?
         ContentValues values = new ContentValues();
         values.put("name", ime);
@@ -408,8 +476,9 @@ public class MainActivity extends AppCompatActivity
 
 
     public void editTask(View view) {
+        int id = (int)((ImageButton)view).getTag();
         Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
-        intent.putExtra("FLAG", "edit");
+        intent.putExtra("FLAG", id);
         startActivity(intent);
     }
 
@@ -432,8 +501,7 @@ public class MainActivity extends AppCompatActivity
             if (checked) {
                 values.put("done", 1);
                 getContentResolver().update(table, values, where, null);
-            }
-            else {
+            } else {
                 values.put("done", 0);
                 getContentResolver().update(table, values, where, null);
             }
@@ -445,6 +513,7 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(MainActivity.this, Pomodoro.class);
         startActivity(intent);
     }
+
 
     public void restartActivity() {
         Intent i = getIntent();
@@ -504,6 +573,43 @@ public class MainActivity extends AppCompatActivity
 
 
 
+
+
+
+    public void filterAndSort(View view){
+        Intent intent = new Intent(MainActivity.this, FilterAndSortActivity.class);
+        startActivity(intent);
+
+    }
+
+    public void manageNotifications(MenuItem item) {
+        if (item.isChecked()){
+            item.setChecked(false);
+            Intent intent1 = new Intent(MainActivity.this, NotificationBuilder.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+            am.cancel(pendingIntent);
+        }
+        else {
+            item.setChecked(true);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 8);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+
+            Calendar now = Calendar.getInstance();
+            now.setTimeInMillis(System.currentTimeMillis());
+            int curHr = now.get(Calendar.HOUR_OF_DAY);
+            int curMin = now.get(Calendar.MINUTE);
+            if ((curHr > 9)||(curHr == 9 && curMin > 0))
+            {
+                calendar.add(Calendar.DATE, 1);
+            }
+
+            Intent intent1 = new Intent(MainActivity.this, NotificationBuilder.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
 
     }
 
