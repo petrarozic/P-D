@@ -68,10 +68,6 @@ public class NotificationBuilder  extends BroadcastReceiver {
             String where = DataBase.TASK_TIME + " LIKE '" + filter + "%'";
             Cursor curs = context.getContentResolver().query(table, new String[]{DataBase.TASK_ID, DataBase.TASK_NAME}, where, null, null);
             int num = curs.getCount();
-
-
-            Toast.makeText(context," Datum -" + filter + "- Broj : " + num,Toast.LENGTH_SHORT).show();
-
             final NotificationCompat.Builder notif;
             String NOTIFICATION_CHANNEL_ID = "my_channel_01";
             CharSequence channelName = "hr.math.karga.MYNOTIF";

@@ -26,6 +26,7 @@ import android.support.v4.content.ContentResolverCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ import android.widget.ArrayAdapter;
 
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import android.widget.Button;
@@ -51,6 +53,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity
     public DBAdapter db;
     List<Integer> taskID;
     final public int notificationID = 13;
-
+    AlarmManager am;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +79,24 @@ public class MainActivity extends AppCompatActivity
 
         // notifikacije :
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 13);
-        calendar.set(Calendar.MINUTE, 42);
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         Intent intent1 = new Intent(MainActivity.this, NotificationBuilder.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager am = (AlarmManager) MainActivity.this.getSystemService(MainActivity.this.ALARM_SERVICE);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+
+        Calendar now = Calendar.getInstance();
+        now.setTimeInMillis(System.currentTimeMillis());
+        int curHr = now.get(Calendar.HOUR_OF_DAY);
+        int curMin = now.get(Calendar.MINUTE);
+        if ((curHr > 9)||(curHr == 9 && curMin > 0))
+        {
+                calendar.add(Calendar.DATE, 1);
+        }
+
+
+        am = (AlarmManager) MainActivity.this.getSystemService(MainActivity.this.ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -212,10 +226,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_category) {
+        if (id == R.id.action_notifications) {
+
             return true;
         }
-*/
+
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -367,6 +383,7 @@ public class MainActivity extends AppCompatActivity
 
                 switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))) {
                     case 1:
+                        editButton.setEnabled(false);
                         check.setChecked(true);
                         doneTasks.addView(taskLayout);
                         break;
@@ -463,5 +480,34 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void manageNotifications(MenuItem item) {
+        if (item.isChecked()){
+            item.setChecked(false);
+            Intent intent1 = new Intent(MainActivity.this, NotificationBuilder.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+            am.cancel(pendingIntent);
+        }
+        else {
+            item.setChecked(true);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 8);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+
+            Calendar now = Calendar.getInstance();
+            now.setTimeInMillis(System.currentTimeMillis());
+            int curHr = now.get(Calendar.HOUR_OF_DAY);
+            int curMin = now.get(Calendar.MINUTE);
+            if ((curHr > 9)||(curHr == 9 && curMin > 0))
+            {
+                calendar.add(Calendar.DATE, 1);
+            }
+
+            Intent intent1 = new Intent(MainActivity.this, NotificationBuilder.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
+    }
 }
 

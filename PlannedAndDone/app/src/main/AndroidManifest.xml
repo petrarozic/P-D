@@ -28,7 +28,6 @@
             android:authorities="hr.math.provider.contprov" />
         <activity android:name=".AddTaskActivity" />
         <activity android:name=".EditCategories" />
-        <activity android:name=".Pomodoro" />
 
         <!-- za notifikacije -->
         <receiver android:name=".NotificationBuilder"/>
