@@ -105,11 +105,8 @@ public class EditCategories extends AppCompatActivity {
         if (c.moveToFirst())
         {
             do {
-                DisplayContact(c);
-
                 arrayList.add(c.getString(c.getColumnIndex(DataBase.CATEGORY_NAME)));
                 arrayID.add(c.getInt(c.getColumnIndex(DataBase.CATEGORY_ID)));
-                //Toast.makeText(getApplicationContext(), c.getString(c.getColumnIndex(DataBase.CATEGORY_NAME)), Toast.LENGTH_SHORT).show();
 
             } while (c.moveToNext());
         }
@@ -119,18 +116,6 @@ public class EditCategories extends AppCompatActivity {
         adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.category_item_layout, arrayList);
         list.setAdapter(adapter);
 
-    }
-
-
-
-    //funkcija za ispis
-    public void DisplayContact(Cursor c)
-    {
-        Toast.makeText(this,
-                "id: " + c.getString(0) + "\n" +
-                        "Name: " + c.getString(1) + "\n"
-                        ,
-                Toast.LENGTH_LONG).show();
     }
 
     public void backToMain(View view) {

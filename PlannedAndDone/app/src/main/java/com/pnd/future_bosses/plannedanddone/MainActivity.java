@@ -85,6 +85,9 @@ public class MainActivity extends AppCompatActivity
     final public int notificationID = 13;
     AlarmManager am;
 
+    public String  SORTBY;
+    public String  WHERE;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -125,93 +128,33 @@ public class MainActivity extends AppCompatActivity
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-        //        this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        //drawer.setDrawerListener(toggle);
-        //toggle.syncState();
-
-
-        //za onaj dio koji je zakomentiran i ne koristimo :)
-        //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        //navigationView.setNavigationItemSelectedListener(this);
-
-
-        //********************************************
-        //STVARANJE ZADATAKA:
-        //********************************************
-        //insertTask("zad1", "VRIJEME1", "KRAJNJE_VRIJEME1", 1, 0, 0);
-        //insertTask("zad2", "VRIJEME2", "KRAJNJE_VRIJEME2", 2, 0, 0);
-        //insertTask("zad3", "VRIJEME3", "KRAJNJE_VRIJEME3", 3, 0, 1);
 
         //********************************************
         //DOHVATI ZADATKE:
         //********************************************
-        Cursor c;
-        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
-        if (android.os.Build.VERSION.SDK_INT < 11) {
-            c = managedQuery(table, null, null, null, null);
-        } else {
-            CursorLoader cursorLoader = new CursorLoader(this, table, null, null, null, null);
-            c = cursorLoader.loadInBackground();
+        //Cursor c;
+        //Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+        Bundle extras = getIntent().getExtras();
+
+
+        if (extras != null)
+        {
+            Log.e("EXTRAS", " DOBIO SAM GA ");
+            WHERE = extras.getString("WHERE");
+            Log.e("EXTRAS", WHERE);
+
+            SORTBY = extras.getString("SORT");
+            Log.e("EXTRAS", SORTBY);
+
+        }
+        else{
+            WHERE = " 1 = 1 ";
+            SORTBY = DataBase.TASK_TIME + " ASC";
         }
 
-
-        // Punjenje za probu : Category
-        // dodaj kategoriju
-        /*
-        ContentValues values = new ContentValues();
-        values.clear();
-        values.put("name", "Home");
-        Uri uri2 = getContentResolver().insert(
-                Uri.parse("content://hr.math.provider.contprov/category"), values);
-
-        Uri table2 = Uri.parse(
-                "content://hr.math.provider.contprov/category");
-        // Ispis
-        if (android.os.Build.VERSION.SDK_INT < 11) {
-            //---before Honeycomb---
-            c = managedQuery(table2, null, null, null, null);
-        } else {
-            //---Honeycomb and later---
-            CursorLoader cursorLoader = new CursorLoader(
-                    this,
-                    table2, null, null, null, null);
-            c = cursorLoader.loadInBackground();
-        }
-        */
-/*
-        if (c.moveToFirst()) {
-            do{
-                Toast.makeText(this,
-                        c.getString(c.getColumnIndex(DataBase.CATEGORY_ID)) + ", " +
-                                c.getString(c.getColumnIndex(DataBase.CATEGORY_NAME)),
-                        Toast.LENGTH_SHORT).show();
-            } while (c.moveToNext());
-        }
-
-*/
-
-        /*
-        //TOAST
-        if (c.moveToFirst()) {
-            do{
-                DisplayTask(c);
-            } while (c.moveToNext());
-        }
-         */
-
-        printTasks();
+        printTasks(WHERE, SORTBY);
     }
 
-
-    public void pretraziBazu(View v) {
-        Toast.makeText(this, "Klik na PRETRAZI BAZU", Toast.LENGTH_LONG).show();
-        //MenuItem item = (MenuItem)findViewById(R.id.nav_deadlineDown) ;
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-
-    }
 
     @Override
     public void onResume() {
@@ -311,25 +254,11 @@ public class MainActivity extends AppCompatActivity
                             Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_success, Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(MainActivity.this, R.string.completed_tasks_deleted_not_success, Toast.LENGTH_SHORT).show();
-                        printTasks();
+                        printTasks(WHERE, SORTBY);
                     }
                 })
                 .setNegativeButton(android.R.string.no, null).show();
 
-    }
-
-    //funkcija za ispis
-    public void DisplayTask(Cursor c) {
-        Toast.makeText(this,
-                "id: " + c.getString(0) + "\n" +
-                        "Name: " + c.getString(1) + "\n" +
-                        "time:  " + c.getString(2) + "\n" +
-                        "deadline: " + c.getString(3) + "\n" +
-                        "category: " + c.getString(4) + "\n" +
-                        "priority  " + c.getString(5) +
-                        "Name: " + c.getString(1) + "\n",
-                //"time:  " + c.getString(2),
-                Toast.LENGTH_LONG).show();
     }
 
     //uredi kategorije
@@ -338,7 +267,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(i);
     }
 
-    public void printTasks() {
+    public void printTasks(String where, String sortBy) {
         //*********************
         //DOHVATI SVE ZADATKE
         //*********************
@@ -346,10 +275,11 @@ public class MainActivity extends AppCompatActivity
         taskID = new ArrayList<Integer>();
         Uri table = Uri.parse("content://hr.math.provider.contprov/task");
         if (android.os.Build.VERSION.SDK_INT < 11) {
-            c = managedQuery(table, null, null, null, null);
+            c = getContentResolver().query(table, new String[]{DataBase.TASK_ID, DataBase.TASK_NAME, DataBase.TASK_TIME, DataBase.TASK_DEADLINE, DataBase.TASK_PRIORITY, DataBase.TASK_CATEGORY, DataBase.TASK_DONE }, where, null, sortBy);
+
         } else {
             CursorLoader cursorLoader = new CursorLoader(this, table, null, null, null, null);
-            c = cursorLoader.loadInBackground();
+            c = getContentResolver().query(table, new String[]{DataBase.TASK_ID, DataBase.TASK_NAME, DataBase.TASK_TIME, DataBase.TASK_DEADLINE, DataBase.TASK_PRIORITY, DataBase.TASK_CATEGORY, DataBase.TASK_DONE }, where, null, sortBy);
         }
 
         //*********************
@@ -364,10 +294,10 @@ public class MainActivity extends AppCompatActivity
         if (c.moveToFirst()) {
             do {
                 //DisplayTask(c);
-
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View taskLayout = inflater.inflate(R.layout.listview_item, null);
                 taskLayout.setTag(c.getInt(c.getColumnIndex(DataBase.TASK_ID)));
+
                 CheckBox check = (CheckBox) taskLayout.findViewById((R.id.checkBox));
                 check.setTag(c.getInt(c.getColumnIndex(DataBase.TASK_ID)));
 
@@ -438,7 +368,7 @@ public class MainActivity extends AppCompatActivity
                                         Uri table = Uri.parse("content://hr.math.provider.contprov/task");
                                         String where = DataBase.TASK_ID + "=" + id;
                                         getContentResolver().delete(table, where, null);
-                                        printTasks();
+                                        printTasks(WHERE, SORTBY);
                                     }
                                 })
                                 .setNegativeButton(android.R.string.no, null).show();
@@ -517,7 +447,7 @@ public class MainActivity extends AppCompatActivity
                 getContentResolver().update(table, values, where, null);
             }
         }
-        printTasks();
+        printTasks(WHERE, SORTBY);
     }
 
     public void pomodoro(MenuItem item) {

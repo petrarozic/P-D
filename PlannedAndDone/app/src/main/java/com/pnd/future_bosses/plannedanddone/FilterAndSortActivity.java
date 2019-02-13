@@ -68,7 +68,6 @@ public class FilterAndSortActivity extends AppCompatActivity {
 
     public void searchAndSort(View view){
 
-        Log.e("NASLOV","Usao sam");
         String where = null;
         String priority = null;
         String deadline = null;
@@ -166,18 +165,35 @@ public class FilterAndSortActivity extends AppCompatActivity {
             else plannedTime += " OR " + DataBase.TASK_TIME + " LIKE '" + datum + "%'";
         }
 
+        //CATEGORY
+        LinearLayout kategorije = (LinearLayout)findViewById(R.id.Categories);
+        int count = kategorije.getChildCount();
+        for(int i = 0; i < count; i++ ){
+            CheckBox check = (CheckBox) kategorije.getChildAt(i);
+            if(check.isChecked()){
+                Log.e("KATEGORIJE", "usao sam ");
+                if(category == null) category = DataBase.TASK_CATEGORY + " = " + (int)check.getTag();
+                    else category += " OR " + DataBase.TASK_CATEGORY + " = " + (int)check.getTag();
+            }
+        }
+
 
         //KREIRANJE UVIJETA ZA UPIT
         if(priority != null) where = "( " + priority +" )";
 
         if (deadline != null){
             if (where == null) where = "( " + deadline +" )";
-                else where += " AND ( " + deadline +" )";
+            else where += " AND ( " + deadline +" )";
         }
 
         if (plannedTime != null){
             if (where == null) where = "( " + plannedTime +" )";
             else where += " AND ( " + plannedTime +" )";
+        }
+
+        if(category != null){
+            if (where == null) where = "( " + category +" )";
+            else where += " AND ( " + category +" )";
         }
 
 
@@ -210,23 +226,14 @@ public class FilterAndSortActivity extends AppCompatActivity {
         }
 
         if ( where != null ){
-            Log.e("ERROR- where", where);
-            Log.e("ERROR- sortBy", sortBy);
-            //KREIRANJE UPITA
-            Uri table = Uri.parse("content://hr.math.provider.contprov/task");
-            Cursor c = getContentResolver().query(table,
-                    new String[]{DataBase.TASK_NAME, DataBase.TASK_TIME, DataBase.TASK_DEADLINE, DataBase.TASK_PRIORITY, DataBase.TASK_CATEGORY, DataBase.TASK_DONE},
-                    where, null, sortBy);
+            Log.e("FILTER AND SORT- where", where);
+            Log.e("FILTER AND SORT- sortBy", sortBy);
+
         }
 
-
-
-
-        //ISPISI IH U MAIN_AC.....
-
-
-
         Intent intent = new Intent(FilterAndSortActivity.this, MainActivity.class);
+        intent.putExtra("WHERE", where);
+        intent.putExtra("SORT", sortBy);
         startActivity(intent);
 
     }
