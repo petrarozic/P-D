@@ -33,6 +33,7 @@
     <string name="reset">Reset</string>
     <string name="pause">Pause</string>
     <string name="youWon">You won:</string>
+    <string name="pdf">PDF</string>
 
 
 </resources>

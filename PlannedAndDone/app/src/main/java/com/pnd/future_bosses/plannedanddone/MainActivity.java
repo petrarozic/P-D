@@ -17,9 +17,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.print.PrintAttributes;
+import android.print.pdf.PrintedPdfDocument;
 import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +35,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -62,6 +67,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import org.w3c.dom.Document;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -149,6 +158,7 @@ public class MainActivity extends AppCompatActivity
 
         // Punjenje za probu : Category
         // dodaj kategoriju
+        /*
         ContentValues values = new ContentValues();
         values.clear();
         values.put("name", "Home");
@@ -168,6 +178,7 @@ public class MainActivity extends AppCompatActivity
                     table2, null, null, null, null);
             c = cursorLoader.loadInBackground();
         }
+        */
 /*
         if (c.moveToFirst()) {
             do{
@@ -572,15 +583,10 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
-
-
-
-
     public void filterAndSort(View view){
         Intent intent = new Intent(MainActivity.this, FilterAndSortActivity.class);
-        startActivity(intent);
 
+        startActivity(intent);
     }
 
     public void manageNotifications(MenuItem item) {

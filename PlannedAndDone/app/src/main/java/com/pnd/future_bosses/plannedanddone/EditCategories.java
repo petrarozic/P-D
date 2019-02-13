@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
@@ -111,6 +112,9 @@ public class EditCategories extends AppCompatActivity {
                 //Toast.makeText(getApplicationContext(), c.getString(c.getColumnIndex(DataBase.CATEGORY_NAME)), Toast.LENGTH_SHORT).show();
 
             } while (c.moveToNext());
+        }
+        else{
+            arrayList.add("You don't have any categories yet.");
         }
         adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.category_item_layout, arrayList);
         list.setAdapter(adapter);
