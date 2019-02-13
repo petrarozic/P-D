@@ -323,10 +323,18 @@ public class MainActivity extends AppCompatActivity
                 taskName.setText(c.getString(c.getColumnIndex(DataBase.TASK_NAME)));
 
                 TextView taskTime = (TextView) taskLayout.findViewById(R.id.taskDate);
-                taskTime.setText(c.getString(c.getColumnIndex(DataBase.TASK_TIME)));
+                String planned_ = c.getString(c.getColumnIndex(DataBase.TASK_TIME));
+                String planned = "-";
+                if(!planned_.equals(""))
+                     planned = planned_.substring(6,8) + "/" + planned_.substring(4,6) + "/" + planned_.substring(0,4) + ", " + planned_.substring(8,10) + ":" + planned_.substring(10,12);
+                taskTime.setText(taskTime.getText() + planned);
 
                 TextView taskDeadline = (TextView) taskLayout.findViewById(R.id.taskDeadline);
-                taskDeadline.setText(c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE)));
+                String deadline_ = c.getString(c.getColumnIndex(DataBase.TASK_DEADLINE));
+                String deadline = "-";
+                if(!deadline_.equals(""))
+                    deadline = deadline_.substring(6,8) + "/" + deadline_.substring(4,6) + "/" + deadline_.substring(0,4) + ", " + deadline_.substring(8,10) + ":" + deadline_.substring(10,12);
+                taskDeadline.setText(taskDeadline.getText() + deadline);
 
                 ImageView priorityImg = (ImageView) taskLayout.findViewById((R.id.priorityImg));
                 switch (c.getInt(4)){
@@ -404,8 +412,9 @@ public class MainActivity extends AppCompatActivity
 
 
     public void editTask(View view) {
+        int id = (int)((ImageButton)view).getTag();
         Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
-        intent.putExtra("FLAG", "edit");
+        intent.putExtra("FLAG", id);
         startActivity(intent);
     }
 
