@@ -9,6 +9,8 @@
           <set>
             <option value="/var/cache/fscache/home/student1/pavujas/Desktop/p-d/PlannedAndDone" />
             <option value="/var/cache/fscache/home/student1/pavujas/Desktop/p-d/PlannedAndDone/app" />
+            <option value="/var/cache/fscache/home/student1/sapuzar/Desktop/plannedNdone/PlannedAndDone" />
+            <option value="/var/cache/fscache/home/student1/sapuzar/Desktop/plannedNdone/PlannedAndDone/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

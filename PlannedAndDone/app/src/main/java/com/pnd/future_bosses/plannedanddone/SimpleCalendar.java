@@ -1,8 +1,12 @@
 package com.pnd.future_bosses.plannedanddone;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -15,13 +19,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
+import static android.support.v4.content.ContextCompat.startActivity;
+
 public class SimpleCalendar extends LinearLayout {
 
+    Context cont;
     private static final String CUSTOM_GREY = "#a0a0a0";
     private static final String[] ENG_MONTH_NAMES = {"January", "February", "March", "April",
             "May", "June", "July", "August",
@@ -73,9 +83,29 @@ public class SimpleCalendar extends LinearLayout {
     }
 
     private void init(Context context) {
+        cont = context;
         DisplayMetrics metrics = getResources().getDisplayMetrics();
 
         View view = LayoutInflater.from(context).inflate(R.layout.simple_calendar, this, true);
+
+        ImageButton prev = (ImageButton)view.findViewById(R.id.previousMonth);
+        ImageButton next = (ImageButton)view.findViewById(R.id.nextMonth);
+        prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPrevoiusClick(v);
+            }
+        });
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNextClick(v);
+            }
+        });
+
+
+
         calendar = Calendar.getInstance();
 
         weekOneLayout = (LinearLayout) view.findViewById(R.id.calendar_week_1);
@@ -110,6 +140,15 @@ public class SimpleCalendar extends LinearLayout {
 
         initCalendarWithDate(chosenDateYear, chosenDateMonth, chosenDateDay, context);
 
+    }
+
+    private void onNextClick(View v) {
+
+        Toast.makeText(cont,"Next", Toast.LENGTH_SHORT).show();
+    }
+
+    private void onPrevoiusClick(View v) {
+        Toast.makeText(cont,"Prvoius", Toast.LENGTH_SHORT).show();
     }
 
     private void initializeDaysWeeks() {
@@ -149,34 +188,54 @@ public class SimpleCalendar extends LinearLayout {
             indexOfDayAfterLastDayOfMonth = daysLeftInFirstWeek + daysInCurrentMonth;
             for (int i = firstDayOfCurrentMonth; i < firstDayOfCurrentMonth + daysInCurrentMonth; ++i) {
                 if (currentDateMonth == chosenDateMonth && currentDateYear == chosenDateYear && dayNumber == currentDateDay) {
-                    days[i].setBackgroundColor(getResources().getColor(R.color.pink));
-                    days[i].setTextColor(Color.WHITE);
+                    // days[i].setBackgroundColor(getResources().getColor(R.color.pink)); /*Necemo mijenjati pozadinu nego samo boldati text*/
+                    days[i].setBackgroundColor(Color.TRANSPARENT);
+                    days[i].setTypeface(null, Typeface.BOLD);
+                    days[i].setTextColor(Color.BLACK);
                 } else {
 
-                    // TU IM MIJENJAJ BOJU
+                    // oznacavamo datume na koje imamo planove
                     days[i].setTextColor(Color.BLACK);
                     days[i].setBackgroundColor(Color.TRANSPARENT);
                     String filter = "" + String.valueOf(year);
-                    if (month < 10)
-                        filter += "0" + String.valueOf(month);
+                    if ((month+1) < 10)
+                        filter += "0" + String.valueOf(month+1);
                     else
-                        filter += String.valueOf(month);
-                    if ( i < 10)
-                        filter += "0" + String.valueOf(i);
+                        filter += String.valueOf(month+1);
+                    if ( dayNumber < 10)
+                        filter += "0" + String.valueOf(dayNumber);
                     else
-                        filter += String.valueOf(i);
+                        filter += String.valueOf(dayNumber);
 
                     //ima li u bazi zadataka.. dohvati dan
                     Uri table = Uri.parse("content://hr.math.provider.contprov/task");
                     Cursor c = context.getContentResolver().query(table,
-                            new String[]{DataBase.TASK_TIME,DataBase.TASK_NAME},
+                            new String[]{DataBase.TASK_TIME,DataBase.TASK_NAME,DataBase.TASK_PRIORITY},
                             DataBase.TASK_TIME + " LIKE '" + filter +"%'", null, "time DESC");
 
-                    if(c.moveToFirst())
-                        days[i].setBackgroundColor(Color.CYAN);
 
+                    if(c.moveToFirst()) {
+                        int prioritet = 4;
+                        do{
+                            if (((c.getInt(2) < prioritet) && (c.getInt(2) != 0))|| (c.getInt(2) == 1 ))
+                                prioritet = c.getInt(2);
+                        }while(c.moveToNext() && (prioritet != 1));
 
-
+                        switch (prioritet){
+                            case 1:
+                                days[i].setBackgroundColor(Color.rgb(255, 102, 102));
+                                break;
+                            case 2:
+                                days[i].setBackgroundColor(Color.rgb(255, 224, 102));
+                                break;
+                            case 3:
+                                days[i].setBackgroundColor(Color.parseColor("#7ac442"));
+                                break;
+                            default:
+                                days[i].setBackgroundColor(Color.rgb(166, 166, 166));
+                                break;
+                        }
+                    }
                 }
 
                 int[] dateArr = new int[3];
@@ -313,9 +372,80 @@ public class SimpleCalendar extends LinearLayout {
     }
 
     public void onDayClick(View view) {
-        Log.e("DAN", "klik na dan");
+        //Log.e("DAN", "klik na dan");
         mListener.onDayClick(view);
 
+        selectedDayButton = (Button) view;
+        if (selectedDayButton.getTag() != null) {
+            int[] dateArray = (int[]) selectedDayButton.getTag();
+            pickedDateDay = dateArray[0];
+            pickedDateMonth = dateArray[1];
+            pickedDateYear = dateArray[2];
+        }
+
+        LinearLayout popis = (LinearLayout)findViewById(R.id.Zadaci);
+        popis.removeAllViews();
+
+
+        String filter = "" + String.valueOf(pickedDateYear);
+        if ((pickedDateMonth+1) < 10)
+            filter += "0" + String.valueOf(pickedDateMonth+1);
+        else
+            filter += String.valueOf(pickedDateMonth+1);
+        if ( pickedDateDay < 10)
+            filter += "0" + String.valueOf(pickedDateDay);
+        else
+            filter += String.valueOf(pickedDateDay);
+
+        //ima li u bazi zadataka.. dohvati dan
+        Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+        Cursor c = cont.getContentResolver().query(table,
+                new String[]{DataBase.TASK_TIME,DataBase.TASK_NAME,DataBase.TASK_PRIORITY},
+                DataBase.TASK_TIME + " LIKE '" + filter +"%'", null, "time DESC");
+
+        if(c.moveToFirst()){
+            TextView caption = new TextView(cont);
+            caption.setText("Tasks for " + pickedDateDay + "." +(pickedDateMonth+1) +". " );
+            caption.setTextSize(30);
+            popis.addView(caption);
+
+            do{
+
+                LayoutInflater inflater = (LayoutInflater) cont.getSystemService(cont.LAYOUT_INFLATER_SERVICE);
+                View taskLayout = inflater.inflate(R.layout.calendar_task_view, null);
+                TextView taskName = (TextView) taskLayout.findViewById(R.id.calTaskName);
+                taskName.setText(c.getString(c.getColumnIndex(DataBase.TASK_NAME)));
+
+                ImageView priorImag = (ImageView) taskLayout.findViewById(R.id.calTaskPriority);
+
+                switch (c.getInt(c.getColumnIndex(DataBase.TASK_PRIORITY))){
+                    case 1:
+                        priorImag.setImageResource(R.drawable.crveni);
+                        break;
+                    case 2:
+                        priorImag.setImageResource(R.drawable.zuti);
+                        break;
+                    case 3:
+                        priorImag.setImageResource(R.drawable.zeleni);
+                        break;
+                    default:
+                        priorImag.setImageResource(R.drawable.sivi);
+                        break;
+                }
+                popis.addView(taskLayout);
+            }while(c.moveToNext());
+        }
+        else{
+            TextView caption = new TextView(cont);
+            caption.setText("You don't have tasks for : " + pickedDateDay + "." +(pickedDateMonth+1) +". : " );
+            caption.setTextSize(30);
+            popis.addView(caption);
+
+        }
+
+
+
+/*
         if (selectedDayButton != null) {
             if (chosenDateYear == currentDateYear
                     && chosenDateMonth == currentDateMonth
@@ -330,6 +460,7 @@ public class SimpleCalendar extends LinearLayout {
                 }
             }
         }
+
 
         selectedDayButton = (Button) view;
         if (selectedDayButton.getTag() != null) {
@@ -350,6 +481,7 @@ public class SimpleCalendar extends LinearLayout {
                 selectedDayButton.setTextColor(Color.WHITE);
             }
         }
+*/
     }
 
     private void addDaysinCalendar(LayoutParams buttonParams, Context context,
