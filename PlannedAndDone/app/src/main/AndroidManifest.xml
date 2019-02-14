@@ -35,8 +35,9 @@
 
         <activity
             android:name=".Pomodoro"
-            android:configChanges="orientation|screenSize"></activity>
-        <activity android:name=".FilterAndSortActivity"></activity>
+            android:configChanges="orientation|screenSize" />
+        <activity android:name=".FilterAndSortActivity" />
+        <activity android:name=".CalendarActivity"></activity>
     </application>
 
 </manifest>

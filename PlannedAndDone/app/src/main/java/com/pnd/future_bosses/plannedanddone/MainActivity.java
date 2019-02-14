@@ -517,6 +517,11 @@ public class MainActivity extends AppCompatActivity {
         printManager.print("print_any_view_job_name", new ViewPrintAdapter(this,
                 findViewById(R.id.listOfTasks)), null);
     }
+
+    public void openCalendar(MenuItem item) {
+        Intent intent = new Intent(MainActivity.this, CalendarActivity.class);
+        startActivity(intent);
+    }
 }
 
 
