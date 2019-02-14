@@ -76,9 +76,7 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity
-        //implements NavigationView.OnNavigationItemSelectedListener
-{
+public class MainActivity extends AppCompatActivity {
 
     public DBAdapter db;
     List<Integer> taskID;
@@ -132,20 +130,12 @@ public class MainActivity extends AppCompatActivity
         //********************************************
         //DOHVATI ZADATKE:
         //********************************************
-        //Cursor c;
-        //Uri table = Uri.parse("content://hr.math.provider.contprov/task");
         Bundle extras = getIntent().getExtras();
-
 
         if (extras != null)
         {
-            Log.e("EXTRAS", " DOBIO SAM GA ");
             WHERE = extras.getString("WHERE");
-            //Log.e("EXTRAS", WHERE);
-
             SORTBY = extras.getString("SORT");
-            //Log.e("EXTRAS", SORTBY);
-
         }
         else{
             WHERE = " 1 = 1 ";
@@ -208,33 +198,6 @@ public class MainActivity extends AppCompatActivity
         drawer.openDrawer(Gravity.LEFT);
     }
 
-    /*
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_deadlineDown) {
-            // Handle the camera action
-        } else if (id == R.id.nav_deadlineUp) {
-
-        } else if (id == R.id.nav_plannedDown) {
-
-        } else if (id == R.id.nav_plannedUp) {
-
-        } else if (id == R.id.nav_priorityDown) {
-
-        } else if (id == R.id.nav_priorityUp) {
-
-        }
-
-        //sljedeca dva retka otvaraju sideBar
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-    */
 
     public void deleteAllDone(MenuItem item) {
 
