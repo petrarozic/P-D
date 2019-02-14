@@ -159,6 +159,14 @@
             android:orientation="horizontal"
             android:weightSum="7" />
 
+        <!-- dodano radi ispisa zadataka -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Zadaci"
+            android:orientation="vertical">
+        </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>
