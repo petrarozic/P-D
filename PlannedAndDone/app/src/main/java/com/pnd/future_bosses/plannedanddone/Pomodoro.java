@@ -122,17 +122,11 @@ public class Pomodoro extends AppCompatActivity {
 
         if(timeMin == 25){
             //crtaj popodora
-            im.setBackgroundResource(R.drawable.pomidor);
-            im.getLayoutParams().width = 450;
-            im.getLayoutParams().height = 500;
-            /*LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DrawerLayout.LayoutParams.WRAP_CONTENT, DrawerLayout.LayoutParams.WRAP_CONTENT);
-            im.setLayoutParams(params);*/
+            im.setBackgroundResource(R.drawable.pomidor1);
         }
         else{
             //crtaj potato
             im.setBackgroundResource(R.drawable.potato);
-            im.getLayoutParams().width = 800;
-            im.getLayoutParams().height = 500;
         }
     }
     public void stratTimer(View view) {

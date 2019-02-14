@@ -4,5 +4,6 @@
     android:layout_height="wrap_content"
     android:padding="5dp"
     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    android:textColor="@color/calendar_number"
 
     />

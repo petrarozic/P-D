@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="@string/my_task_is"
             android:textSize="17dp"
-            android:textColor="#434343"/>
+            android:textColor="@android:color/black"/>
 
         <EditText
             android:id="@+id/name"
@@ -40,7 +40,8 @@
         android:text="@string/optional"
         android:textSize="13dp"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginBottom="15dp"
+        android:textColor="@color/calendar_number"/>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -54,7 +55,7 @@
             android:layout_height="wrap_content"
             android:text="@string/i_plan_to_finish_task_by"
             android:textSize="17dp"
-            android:textColor="#434343"/>
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/plannedView"
@@ -95,7 +96,7 @@
             android:layout_height="wrap_content"
             android:text="@string/deadline_for_task_is"
             android:textSize="17dp"
-            android:textColor="#434343"/>
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/deadlineView"
@@ -137,7 +138,7 @@
             android:layout_height="wrap_content"
             android:text="@string/priority_of_task"
             android:textSize="17dp"
-            android:textColor="#434343"/>
+            android:textColor="@android:color/black"/>
 
         <Spinner
             android:id="@+id/prioritySpinner"
@@ -165,7 +166,7 @@
             android:layout_height="wrap_content"
             android:text="@string/category_of_task"
             android:textSize="17dp"
-            android:textColor="#434343"/>
+            android:textColor="@android:color/black"/>
 
         <Spinner
             android:id="@+id/categorySpinner"

@@ -152,6 +152,10 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
                 name1 = c1.getString(0);
                 planned1 = c1.getString(1);
                 deadline1 = c1.getString(2);
+                String d1, p1;
+                p1 = planned1.substring(6,8) + "/" + planned1.substring(4,6) + "/" + planned1.substring(0,4) + ", " + planned1.substring(8,10) + ":" + planned1.substring(10,12);
+                d1 = deadline1.substring(6,8) + "/" + deadline1.substring(4,6) + "/" + deadline1.substring(0,4) + ", " + deadline1.substring(8,10) + ":" + deadline1.substring(10,12);
+
                 switch (c1.getInt(3))
                 {
                     case 1:
@@ -177,9 +181,9 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
                 EditText name1_ = (EditText) findViewById(R.id.name);
                 name1_.setText(name1);
                 TextView deadline1_ = (TextView) findViewById(R.id.deadlineView);
-                deadline1_.setText(deadline1);
+                deadline1_.setText(d1);
                 TextView planned1_ = (TextView) findViewById(R.id.plannedView);
-                planned1_.setText(planned1);
+                planned1_.setText(p1);
                 Spinner priority1_ = (Spinner) findViewById(R.id.prioritySpinner);
                 priority1_.setSelection(adapter1.getPosition(priority1));
                 Spinner category1_ = (Spinner) findViewById(R.id.categorySpinner);

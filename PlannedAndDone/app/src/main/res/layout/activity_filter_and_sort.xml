@@ -37,7 +37,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Sort by:"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textColor="@color/calendar_number"/>
                 <RadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -79,7 +80,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Filter"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textColor="@color/calendar_number"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -91,7 +93,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="Priority"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp"
+                        android:textColor="@color/calendar_number"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -121,7 +124,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="Category"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp"
+                        android:textColor="@color/calendar_number"/>
 
                     <LinearLayout
                         android:id = "@+id/Categories"
@@ -140,7 +144,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="Deadline"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp"
+                        android:textColor="@color/calendar_number"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -164,7 +169,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="Planned"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp"
+                        android:textColor="@color/calendar_number"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"

@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -358,6 +357,7 @@ public class MainActivity extends AppCompatActivity {
             TextView taskName1 = new TextView(this); //) noPlannedTasks.findViewById(R.id.taskName);
             taskName1.setText("Get yourself organized and start planning your tasks!");
             taskName1.setTextSize(18);
+            taskName1.setTextColor(Color.rgb(90,90,90));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DrawerLayout.LayoutParams.WRAP_CONTENT, DrawerLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0,20,0,20);
             taskName1.setLayoutParams(params);
@@ -367,6 +367,7 @@ public class MainActivity extends AppCompatActivity {
         if(doneTasks.getChildCount() == 0) {
             TextView taskName2 = new TextView(this); //) noDoneTasks.findViewById(R.id.taskName);
             taskName2.setTextSize(18);
+            taskName2.setTextColor(Color.rgb(90,90,90));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DrawerLayout.LayoutParams.WRAP_CONTENT, DrawerLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0,20,0,20);
             taskName2.setLayoutParams(params);
@@ -458,11 +459,7 @@ public class MainActivity extends AppCompatActivity {
         alt_bld.setSingleChoiceItems(grpname, -1, new DialogInterface
                 .OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
-                Toast.makeText(getApplicationContext(),
-                        grpname[item], Toast.LENGTH_SHORT).show();
                 style = grpname[item];
-                Toast.makeText(getApplicationContext(),
-                        "-" + style + "-", Toast.LENGTH_SHORT).show();
                 switch (style) {
                     case "Blue":
                         setTheme(R.style.LightBlue);
