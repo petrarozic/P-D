@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -12,6 +13,14 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/previousMonth"
+        android:layout_width="25dp"
+        android:layout_height="match_parent"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/previ"/>
 
     <TextView
         android:id="@+id/current_date"
@@ -27,6 +36,14 @@
         android:paddingLeft="@dimen/space"
         android:textColor="@color/green"
         android:textSize="28sp" />
+
+    <ImageButton
+        android:id="@+id/nextMonth"
+        android:layout_width="25dp"
+        android:layout_height="match_parent"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/next1"/>
 
 </LinearLayout>
 

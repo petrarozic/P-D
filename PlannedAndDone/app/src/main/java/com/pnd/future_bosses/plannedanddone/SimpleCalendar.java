@@ -19,9 +19,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -85,6 +87,25 @@ public class SimpleCalendar extends LinearLayout {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
 
         View view = LayoutInflater.from(context).inflate(R.layout.simple_calendar, this, true);
+
+        ImageButton prev = (ImageButton)view.findViewById(R.id.previousMonth);
+        ImageButton next = (ImageButton)view.findViewById(R.id.nextMonth);
+        prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPrevoiusClick(v);
+            }
+        });
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNextClick(v);
+            }
+        });
+
+
+
         calendar = Calendar.getInstance();
 
         weekOneLayout = (LinearLayout) view.findViewById(R.id.calendar_week_1);
@@ -119,6 +140,15 @@ public class SimpleCalendar extends LinearLayout {
 
         initCalendarWithDate(chosenDateYear, chosenDateMonth, chosenDateDay, context);
 
+    }
+
+    private void onNextClick(View v) {
+
+        Toast.makeText(cont,"Next", Toast.LENGTH_SHORT).show();
+    }
+
+    private void onPrevoiusClick(View v) {
+        Toast.makeText(cont,"Prvoius", Toast.LENGTH_SHORT).show();
     }
 
     private void initializeDaysWeeks() {
