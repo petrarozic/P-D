@@ -16,13 +16,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.print.PageRange;
 import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintDocumentInfo;
+import android.print.PrintManager;
 import android.print.pdf.PrintedPdfDocument;
 import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
@@ -71,6 +81,7 @@ import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -185,19 +196,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-    // Otvaramo filter/sort menu
-    public void SortBy(View view) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.openDrawer(Gravity.LEFT);
-    }
-
-    public void FilterBy(View view) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.openDrawer(Gravity.LEFT);
-    }
-
 
     public void deleteAllDone(MenuItem item) {
 
@@ -515,26 +513,11 @@ public class MainActivity extends AppCompatActivity {
 
     @TargetApi(19)
     public void exportPDF(MenuItem item) {
-
-/*
-        PrintedPdfDocument document = new PrintedPdfDocument(getApplicationContext(), new PrintAttributes.Builder().
-                setColorMode(PrintAttributes.COLOR_MODE_MONOCHROME).
-                setMediaSize(PrintAttributes.MediaSize.NA_LETTER.asLandscape()).
-                setResolution(new PrintAttributes.Resolution("zooey", PRINT_SERVICE, 300, 300)).
-                setMinMargins(PrintAttributes.Margins.NO_MARGINS).
-                build());
-
-        PdfDocument.Page page = document.startPage(0);
-
-        View content = findViewById(R.id.listOfTasks);
-        content.draw(page.getCanvas());
-
-        document.finishPage(page);
-
-        document.writeTo(getOutputStream());
-
-        document.close();
-*/
+        PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
+        printManager.print("print_any_view_job_name", new ViewPrintAdapter(this,
+                findViewById(R.id.listOfTasks)), null);
     }
 }
+
+
 

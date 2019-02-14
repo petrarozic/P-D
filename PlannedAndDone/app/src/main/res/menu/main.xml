@@ -39,7 +39,7 @@
         android:onClick="updateCategoryClick"/>
 
     <item android:id="@+id/PDF" android:orderInCategory="100"
-        android:title="gfhdf" app:showAsAction="never"
+        android:title="Export to PDF" app:showAsAction="never"
         android:onClick="exportPDF"/>
     
 </menu>
