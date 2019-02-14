@@ -11,4 +11,13 @@
     <color name="accent_material_light">#ff1744</color>
     <color name="primary_material_light">#d62c4d</color>
     <color name="primary_dark_material_light">#a81f39</color>
+    <color name="accent_material_light">#f9b564</color>
+    <color name="primary_material_light">#faae3e</color>
+    <color name="primary_dark_material_light">#fb6c3f</color>
+
+    <!-- DEF. ZA KALENDAR -->
+    <color name="grey">#a0a0a0</color>
+    <color name="calendar_number">#424A56</color>
+    <color name="pink">#FF4081</color>
+    <color name="green">#388E3C</color>
 </resources>

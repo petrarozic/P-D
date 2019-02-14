@@ -16,13 +16,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.print.PageRange;
 import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintDocumentInfo;
+import android.print.PrintManager;
 import android.print.pdf.PrintedPdfDocument;
 import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
@@ -71,14 +81,13 @@ import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity
-        //implements NavigationView.OnNavigationItemSelectedListener
-{
+public class MainActivity extends AppCompatActivity {
 
     public DBAdapter db;
     List<Integer> taskID;
@@ -132,20 +141,12 @@ public class MainActivity extends AppCompatActivity
         //********************************************
         //DOHVATI ZADATKE:
         //********************************************
-        //Cursor c;
-        //Uri table = Uri.parse("content://hr.math.provider.contprov/task");
         Bundle extras = getIntent().getExtras();
-
 
         if (extras != null)
         {
-            Log.e("EXTRAS", " DOBIO SAM GA ");
             WHERE = extras.getString("WHERE");
-            //Log.e("EXTRAS", WHERE);
-
             SORTBY = extras.getString("SORT");
-            //Log.e("EXTRAS", SORTBY);
-
         }
         else{
             WHERE = " 1 = 1 ";
@@ -207,46 +208,6 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-
-    // Otvaramo filter/sort menu
-    public void SortBy(View view) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.openDrawer(Gravity.LEFT);
-    }
-
-    public void FilterBy(View view) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.openDrawer(Gravity.LEFT);
-    }
-
-    /*
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_deadlineDown) {
-            // Handle the camera action
-        } else if (id == R.id.nav_deadlineUp) {
-
-        } else if (id == R.id.nav_plannedDown) {
-
-        } else if (id == R.id.nav_plannedUp) {
-
-        } else if (id == R.id.nav_priorityDown) {
-
-        } else if (id == R.id.nav_priorityUp) {
-
-        }
-
-        //sljedeca dva retka otvaraju sideBar
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-    */
 
     public void deleteAllDone(MenuItem item) {
 
@@ -569,26 +530,16 @@ public class MainActivity extends AppCompatActivity
 
     @TargetApi(19)
     public void exportPDF(MenuItem item) {
+        PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
+        printManager.print("print_any_view_job_name", new ViewPrintAdapter(this,
+                findViewById(R.id.listOfTasks)), null);
+    }
 
-/*
-        PrintedPdfDocument document = new PrintedPdfDocument(getApplicationContext(), new PrintAttributes.Builder().
-                setColorMode(PrintAttributes.COLOR_MODE_MONOCHROME).
-                setMediaSize(PrintAttributes.MediaSize.NA_LETTER.asLandscape()).
-                setResolution(new PrintAttributes.Resolution("zooey", PRINT_SERVICE, 300, 300)).
-                setMinMargins(PrintAttributes.Margins.NO_MARGINS).
-                build());
-
-        PdfDocument.Page page = document.startPage(0);
-
-        View content = findViewById(R.id.listOfTasks);
-        content.draw(page.getCanvas());
-
-        document.finishPage(page);
-
-        document.writeTo(getOutputStream());
-
-        document.close();
-*/
+    public void openCalendar(MenuItem item) {
+        Intent intent = new Intent(MainActivity.this, CalendarActivity.class);
+        startActivity(intent);
     }
 }
+
+
 

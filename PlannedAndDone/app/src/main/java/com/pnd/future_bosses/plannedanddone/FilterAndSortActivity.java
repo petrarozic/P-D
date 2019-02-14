@@ -25,6 +25,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class FilterAndSortActivity extends AppCompatActivity {
 
@@ -61,6 +62,7 @@ public class FilterAndSortActivity extends AppCompatActivity {
         else{
             TextView newCategory = new TextView(this);
             newCategory.setText("You don't have any categories yet.");
+            newCategory.setTag(-1);
             layoutCategories.addView(newCategory);
         }
     }
@@ -87,7 +89,6 @@ public class FilterAndSortActivity extends AppCompatActivity {
         if (checkBox.isChecked())
             if( priority == null)  priority =  DataBase.TASK_PRIORITY + "= 3";
             else priority +=  " OR " + DataBase.TASK_PRIORITY + "= 3";
-
 
         Calendar calendar= Calendar.getInstance();
         String datum = null;
@@ -128,7 +129,6 @@ public class FilterAndSortActivity extends AppCompatActivity {
                 else deadline += " OR " + DataBase.TASK_DEADLINE + " LIKE '" + datum + "%'";
         }
 
-
         //PLANNED
         checkBox = (CheckBox)this.findViewById(R.id.plannedDay);
         if (checkBox.isChecked()) {
@@ -168,15 +168,17 @@ public class FilterAndSortActivity extends AppCompatActivity {
         //CATEGORY
         LinearLayout kategorije = (LinearLayout)findViewById(R.id.Categories);
         int count = kategorije.getChildCount();
-        for(int i = 0; i < count; i++ ){
-            CheckBox check = (CheckBox) kategorije.getChildAt(i);
-            if(check.isChecked()){
-                Log.e("KATEGORIJE", "usao sam ");
-                if(category == null) category = DataBase.TASK_CATEGORY + " = " + (int)check.getTag();
+
+        //provjeravam tko mu je prvo dijete
+        if ((int)(kategorije.getChildAt(0)).getTag() != -1 ) {
+            for(int i = 0; i < count; i++ ){
+                CheckBox check = (CheckBox) kategorije.getChildAt(i);
+                if(check.isChecked()){
+                    if(category == null) category = DataBase.TASK_CATEGORY + " = " + (int)check.getTag();
                     else category += " OR " + DataBase.TASK_CATEGORY + " = " + (int)check.getTag();
+                }
             }
         }
-
 
         //KREIRANJE UVIJETA ZA UPIT
         if(priority != null) where = "( " + priority +" )";
@@ -195,7 +197,6 @@ public class FilterAndSortActivity extends AppCompatActivity {
             if (where == null) where = "( " + category +" )";
             else where += " AND ( " + category +" )";
         }
-
 
         //SORT..
         String sortBy = null;
@@ -224,6 +225,8 @@ public class FilterAndSortActivity extends AppCompatActivity {
             default:
                 sortBy = DataBase.TASK_TIME + " ASC";
         }
+
+
 
         if ( where != null ){
             Log.e("FILTER AND SORT- where", where);

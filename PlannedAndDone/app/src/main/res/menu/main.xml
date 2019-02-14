@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/action_kalendar" android:orderInCategory="100"
-        android:title="@string/action_calendar" app:showAsAction="never" />
+        android:title="@string/action_calendar" app:showAsAction="never" android:onClick="openCalendar" />
 
     <item android:id="@+id/action_pomodoro" android:orderInCategory="100"
         android:title="@string/action_pomodoro" app:showAsAction="never" android:onClick="pomodoro"/>
@@ -39,7 +39,7 @@
         android:onClick="updateCategoryClick"/>
 
     <item android:id="@+id/PDF" android:orderInCategory="100"
-        android:title="gfhdf" app:showAsAction="never"
+        android:title="Export to PDF" app:showAsAction="never"
         android:onClick="exportPDF"/>
     
 </menu>
