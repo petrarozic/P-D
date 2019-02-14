@@ -37,5 +37,9 @@
     <item android:id="@+id/action_category" android:orderInCategory="100"
         android:title="@string/action_category" app:showAsAction="never"
         android:onClick="updateCategoryClick"/>
+
+    <item android:id="@+id/PDF" android:orderInCategory="100"
+        android:title="gfhdf" app:showAsAction="never"
+        android:onClick="exportPDF"/>
     
 </menu>

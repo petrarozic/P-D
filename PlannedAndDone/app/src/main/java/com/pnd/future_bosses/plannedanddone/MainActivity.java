@@ -141,10 +141,10 @@ public class MainActivity extends AppCompatActivity
         {
             Log.e("EXTRAS", " DOBIO SAM GA ");
             WHERE = extras.getString("WHERE");
-            Log.e("EXTRAS", WHERE);
+            //Log.e("EXTRAS", WHERE);
 
             SORTBY = extras.getString("SORT");
-            Log.e("EXTRAS", SORTBY);
+            //Log.e("EXTRAS", SORTBY);
 
         }
         else{
@@ -550,5 +550,28 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @TargetApi(19)
+    public void exportPDF(MenuItem item) {
+
+/*
+        PrintedPdfDocument document = new PrintedPdfDocument(getApplicationContext(), new PrintAttributes.Builder().
+                setColorMode(PrintAttributes.COLOR_MODE_MONOCHROME).
+                setMediaSize(PrintAttributes.MediaSize.NA_LETTER.asLandscape()).
+                setResolution(new PrintAttributes.Resolution("zooey", PRINT_SERVICE, 300, 300)).
+                setMinMargins(PrintAttributes.Margins.NO_MARGINS).
+                build());
+
+        PdfDocument.Page page = document.startPage(0);
+
+        View content = findViewById(R.id.listOfTasks);
+        content.draw(page.getCanvas());
+
+        document.finishPage(page);
+
+        document.writeTo(getOutputStream());
+
+        document.close();
+*/
+    }
 }
 

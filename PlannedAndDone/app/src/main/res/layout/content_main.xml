@@ -45,6 +45,7 @@
         android:background="#c0c0c0" />
 
     <ScrollView
+        android:id="@+id/listOfTasks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
