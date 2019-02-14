@@ -1,12 +1,16 @@
 package com.pnd.future_bosses.plannedanddone;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.annotation.StringDef;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,7 +108,7 @@ public class SimpleCalendar extends LinearLayout {
         }
         addDaysinCalendar(defaultButtonParams, context, metrics);
 
-        initCalendarWithDate(chosenDateYear, chosenDateMonth, chosenDateDay);
+        initCalendarWithDate(chosenDateYear, chosenDateMonth, chosenDateDay, context);
 
     }
 
@@ -120,7 +124,7 @@ public class SimpleCalendar extends LinearLayout {
         weeks[5] = weekSixLayout;
     }
 
-    private void initCalendarWithDate(int year, int month, int day) {
+    private void initCalendarWithDate(int year, int month, int day, Context context) {
         if (calendar == null)
             calendar = Calendar.getInstance();
         calendar.set(year, month, day);
@@ -144,14 +148,35 @@ public class SimpleCalendar extends LinearLayout {
             daysLeftInFirstWeek = firstDayOfCurrentMonth;
             indexOfDayAfterLastDayOfMonth = daysLeftInFirstWeek + daysInCurrentMonth;
             for (int i = firstDayOfCurrentMonth; i < firstDayOfCurrentMonth + daysInCurrentMonth; ++i) {
-                if (currentDateMonth == chosenDateMonth
-                        && currentDateYear == chosenDateYear
-                        && dayNumber == currentDateDay) {
+                if (currentDateMonth == chosenDateMonth && currentDateYear == chosenDateYear && dayNumber == currentDateDay) {
                     days[i].setBackgroundColor(getResources().getColor(R.color.pink));
                     days[i].setTextColor(Color.WHITE);
                 } else {
+
+                    // TU IM MIJENJAJ BOJU
                     days[i].setTextColor(Color.BLACK);
                     days[i].setBackgroundColor(Color.TRANSPARENT);
+                    String filter = "" + String.valueOf(year);
+                    if (month < 10)
+                        filter += "0" + String.valueOf(month);
+                    else
+                        filter += String.valueOf(month);
+                    if ( i < 10)
+                        filter += "0" + String.valueOf(i);
+                    else
+                        filter += String.valueOf(i);
+
+                    //ima li u bazi zadataka.. dohvati dan
+                    Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+                    Cursor c = context.getContentResolver().query(table,
+                            new String[]{DataBase.TASK_TIME,DataBase.TASK_NAME},
+                            DataBase.TASK_TIME + " LIKE '" + filter +"%'", null, "time DESC");
+
+                    if(c.moveToFirst())
+                        days[i].setBackgroundColor(Color.CYAN);
+
+
+
                 }
 
                 int[] dateArr = new int[3];
@@ -288,6 +313,7 @@ public class SimpleCalendar extends LinearLayout {
     }
 
     public void onDayClick(View view) {
+        Log.e("DAN", "klik na dan");
         mListener.onDayClick(view);
 
         if (selectedDayButton != null) {
@@ -375,5 +401,4 @@ public class SimpleCalendar extends LinearLayout {
     public void setCallBack(DayClickListener mListener) {
         this.mListener = mListener;
     }
-
 }
