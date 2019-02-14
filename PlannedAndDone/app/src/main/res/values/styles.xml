@@ -26,7 +26,11 @@
 
     <style name="LightGreen" parent="Theme.AppCompat.Light.NoActionBar" />
 
-    <style name="LightOrange" parent="LightGreen" />
+    <style name="LightOrange" parent="LightGreen" >
+        <item name="android:colorBackground">@android:color/background_light</item>
+        <item name="android:colorForeground">@android:color/black</item>
+        <item name="android:textColorPrimaryInverse">@android:color/black</item>
+    </style>
 
 
 </resources>

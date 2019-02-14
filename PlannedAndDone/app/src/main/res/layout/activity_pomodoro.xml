@@ -23,7 +23,9 @@
         android:orientation="horizontal"
         tools:layout_editor_absoluteX="7dp"
         tools:layout_editor_absoluteY="5dp"
-        android:layout_gravity="center|top">
+        android:layout_gravity="center|top"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
 
         <Button
             android:id="@+id/button9"
@@ -61,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00"
-            android:textColor="@android:color/holo_green_dark"
+            android:textColor="#199E45"
             android:textSize="60dp"
             android:textStyle="bold" />
 
@@ -70,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=":"
-            android:textColor="@android:color/holo_green_dark"
+            android:textColor="#199E45"
             android:textSize="60dp"
             android:textStyle="bold" />
 
@@ -80,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00"
-            android:textColor="@android:color/holo_green_dark"
+            android:textColor="#199E45"
             android:textSize="60dp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -89,7 +91,7 @@
                 android:id="@+id/linearLayout7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="50dp">
 
@@ -106,11 +108,9 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="213dp"
-        android:layout_height="166dp"
-
-        android:layout_gravity="center|bottom"
-        android:layout_weight="0.29" />
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_gravity="center|bottom" />
 
 
     <LinearLayout
@@ -118,6 +118,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="50dp"
+        android:layout_marginTop="20dp"
         android:layout_weight="1"
         android:orientation="horizontal">
 

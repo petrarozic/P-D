@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.pnd.future_bosses.plannedanddone.FilterAndSortActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginBottom="20dp">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,9 +27,10 @@
                 android:orientation="vertical">
 
                 <Button
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="Search &amp; Sort"
+                    android:text="Search"
+                    android:layout_gravity="right"
                     android:onClick="searchAndSort"/>
 
                 <TextView
