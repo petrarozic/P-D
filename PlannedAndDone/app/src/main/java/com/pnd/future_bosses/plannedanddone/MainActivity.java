@@ -154,6 +154,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         printTasks(WHERE, SORTBY);
+
+        Uri table = Uri.parse( "content://hr.math.provider.contprov/category");
+        Cursor a = getContentResolver().query(table, new String[]{DataBase.CATEGORY_ID}, "1=1", null, null);
+        ContentValues values1 = new ContentValues();
+        ContentValues values2 = new ContentValues();
+        if(!a.moveToFirst()) {
+            values1.put("name", "Work");
+            getContentResolver().insert(table, values1);
+            values2.put("name", "Home");
+            getContentResolver().insert(table, values2);
+        }
+
     }
 
 
@@ -345,13 +357,19 @@ public class MainActivity extends AppCompatActivity {
         if(plannedTasks.getChildCount() == 0) {
             TextView taskName1 = new TextView(this); //) noPlannedTasks.findViewById(R.id.taskName);
             taskName1.setText("Get yourself organized and start planning your tasks!");
-            taskName1.setTextSize(20);
+            taskName1.setTextSize(18);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DrawerLayout.LayoutParams.WRAP_CONTENT, DrawerLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0,20,0,20);
+            taskName1.setLayoutParams(params);
             taskName1.setGravity(Gravity.CENTER);
             plannedTasks.addView(taskName1);
         }
         if(doneTasks.getChildCount() == 0) {
             TextView taskName2 = new TextView(this); //) noDoneTasks.findViewById(R.id.taskName);
-            taskName2.setTextSize(20);
+            taskName2.setTextSize(18);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DrawerLayout.LayoutParams.WRAP_CONTENT, DrawerLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0,20,0,20);
+            taskName2.setLayoutParams(params);
             taskName2.setText("This is where all your done tasks will be displayed.");
             taskName2.setGravity(Gravity.CENTER);
 
@@ -447,7 +465,6 @@ public class MainActivity extends AppCompatActivity {
                         "-" + style + "-", Toast.LENGTH_SHORT).show();
                 switch (style) {
                     case "Blue":
-
                         setTheme(R.style.LightBlue);
                         //restartActivity();
                         break;

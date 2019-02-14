@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="@string/my_task_is"
             android:textSize="17dp"
-            android:textColor="@android:color/black"/>
+            android:textColor="#434343"/>
 
         <EditText
             android:id="@+id/name"
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:text="@string/i_plan_to_finish_task_by"
             android:textSize="17dp"
-            android:textColor="@android:color/black"/>
+            android:textColor="#434343"/>
 
         <TextView
             android:id="@+id/plannedView"
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:text="@string/deadline_for_task_is"
             android:textSize="17dp"
-            android:textColor="@android:color/black"/>
+            android:textColor="#434343"/>
 
         <TextView
             android:id="@+id/deadlineView"
@@ -137,7 +137,7 @@
             android:layout_height="wrap_content"
             android:text="@string/priority_of_task"
             android:textSize="17dp"
-            android:textColor="@android:color/black"/>
+            android:textColor="#434343"/>
 
         <Spinner
             android:id="@+id/prioritySpinner"
@@ -165,7 +165,7 @@
             android:layout_height="wrap_content"
             android:text="@string/category_of_task"
             android:textSize="17dp"
-            android:textColor="@android:color/black"/>
+            android:textColor="#434343"/>
 
         <Spinner
             android:id="@+id/categorySpinner"
