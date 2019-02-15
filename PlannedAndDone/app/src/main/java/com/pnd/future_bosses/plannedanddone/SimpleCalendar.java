@@ -15,7 +15,6 @@ import android.support.annotation.StringDef;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -175,6 +173,7 @@ public class SimpleCalendar extends LinearLayout {
             godina = chosenDateYear;
         }
 
+        currentDate.setText("" + currentDateDay);
         currentMonth.setText(ENG_MONTH_NAMES[mjesec]);
         initCalendarWithDate(godina, mjesec, 1, cont);
 
@@ -205,7 +204,6 @@ public class SimpleCalendar extends LinearLayout {
 
         int godina;
         int mjesec;
-        int dan = 1;
 
         if (chosenDateMonth == 0) {
             mjesec = 11;
@@ -216,7 +214,7 @@ public class SimpleCalendar extends LinearLayout {
             godina = chosenDateYear;
         }
 
-        //currentDate.setText("");
+        currentDate.setText("" + currentDateDay);
         currentMonth.setText(ENG_MONTH_NAMES[mjesec]);
         initCalendarWithDate(godina, mjesec, 1, cont);
     }
@@ -433,7 +431,7 @@ public class SimpleCalendar extends LinearLayout {
         LinearLayout popis = (LinearLayout)findViewById(R.id.Zadaci);
         popis.removeAllViews();
 
-
+        currentDate.setText(""+ pickedDateDay);
         String filter = "" + String.valueOf(pickedDateYear);
         if ((pickedDateMonth+1) < 10)
             filter += "0" + String.valueOf(pickedDateMonth+1);
@@ -461,7 +459,6 @@ public class SimpleCalendar extends LinearLayout {
             popis.addView(caption);
 
             do{
-
                 LayoutInflater inflater = (LayoutInflater) cont.getSystemService(cont.LAYOUT_INFLATER_SERVICE);
                 View taskLayout = inflater.inflate(R.layout.calendar_task_view, null);
                 TextView taskName = (TextView) taskLayout.findViewById(R.id.calTaskName);
