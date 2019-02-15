@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.StringDef;
+import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -404,8 +405,12 @@ public class SimpleCalendar extends LinearLayout {
 
         if(c.moveToFirst()){
             TextView caption = new TextView(cont);
-            caption.setText("Tasks for " + pickedDateDay + "." +(pickedDateMonth+1) +". " );
-            caption.setTextSize(30);
+            caption.setText("Tasks for " + pickedDateDay + "." +(pickedDateMonth+1) +".:" );
+            caption.setTextSize(17);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DrawerLayout.LayoutParams.WRAP_CONTENT, DrawerLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(40,40,40,10);
+            caption.setLayoutParams(params);
+            caption.setTextColor(Color.rgb(0,0,0));
             popis.addView(caption);
 
             do{
@@ -436,9 +441,13 @@ public class SimpleCalendar extends LinearLayout {
         }
         else{
             TextView caption = new TextView(cont);
-            caption.setText("You don't have tasks for : " + pickedDateDay + "." +(pickedDateMonth+1) +". : " );
-            caption.setTextSize(30);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DrawerLayout.LayoutParams.WRAP_CONTENT, DrawerLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(40,40,20,40);
+            caption.setLayoutParams(params);
+            caption.setText("You don't have tasks for " + pickedDateDay + "." +(pickedDateMonth+1) +"." );
+            caption.setTextSize(17);
             popis.addView(caption);
+            caption.setTextColor(Color.rgb(0,0,0));
 
         }
 

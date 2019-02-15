@@ -18,5 +18,7 @@
         android:id="@+id/calTaskName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25dp" />
+        android:textSize="20dp"
+        android:textColor="@color/calendar_number"
+        android:layout_marginTop="7dp" />
 </LinearLayout>
