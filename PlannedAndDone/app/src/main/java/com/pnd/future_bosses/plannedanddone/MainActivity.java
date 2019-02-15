@@ -193,9 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -447,46 +445,6 @@ public class MainActivity extends AppCompatActivity {
         this.startActivity(i);
     }
 
-    String style = "";
-
-    public void choseStyle(MenuItem item) {
-        // custom dialog
-        final String[] grpname = new String[]{"Blue", "Pink", "Orange", "Green"};
-
-
-        AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
-        //alt_bld.setIcon(R.drawable.icon);
-        alt_bld.setTitle("Select theme:");
-        alt_bld.setSingleChoiceItems(grpname, -1, new DialogInterface
-                .OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
-                style = grpname[item];
-                switch (style) {
-                    case "Blue":
-                        setTheme(R.style.LightBlue);
-                        //restartActivity();
-                        break;
-                    case "Pink":
-                        setTheme(R.style.LightPink);
-                        //restartActivity();
-                        break;
-                    case "Orange":
-                        setTheme(R.style.LightOrange);
-                        break;
-                    case "Green":
-                        setTheme(R.style.LightGreen);
-                        break;
-                    default:
-                        break;
-
-                }
-                dialog.dismiss();
-
-            }
-        });
-        AlertDialog alert = alt_bld.create();
-        alert.show();
-    }
 
 
     public void filterAndSort(View view){

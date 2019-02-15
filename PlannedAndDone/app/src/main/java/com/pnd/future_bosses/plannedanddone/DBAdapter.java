@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class DBAdapter implements Serializable{
+    // NOT IN USE
+   /*
     static final String TASK_ID = "_id";
     static final String TASK_NAME = "name";
     static final String TASK_TIME = "time";
@@ -291,5 +293,6 @@ public class DBAdapter implements Serializable{
         //return true;
         return db.delete(TASK_TABLE, TASK_DONE + "= 1", null) > 0;
     }
+    */
 }
 
