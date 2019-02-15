@@ -97,15 +97,12 @@ public class SimpleCalendar extends LinearLayout {
                 onPrevoiusClick(v);
             }
         });
-
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onNextClick(v);
             }
         });
-
-
 
         calendar = Calendar.getInstance();
 
@@ -144,12 +141,84 @@ public class SimpleCalendar extends LinearLayout {
     }
 
     private void onNextClick(View v) {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
 
-        Toast.makeText(cont,"Next", Toast.LENGTH_SHORT).show();
+        calendar = Calendar.getInstance();
+        View view = LayoutInflater.from(cont).inflate(R.layout.simple_calendar, this, true);
+
+        weekOneLayout = (LinearLayout) view.findViewById(R.id.calendar_week_1);
+        weekTwoLayout = (LinearLayout) view.findViewById(R.id.calendar_week_2);
+        weekThreeLayout = (LinearLayout) view.findViewById(R.id.calendar_week_3);
+        weekFourLayout = (LinearLayout) view.findViewById(R.id.calendar_week_4);
+        weekFiveLayout = (LinearLayout) view.findViewById(R.id.calendar_week_5);
+        weekSixLayout = (LinearLayout) view.findViewById(R.id.calendar_week_6);
+
+        weekOneLayout.removeAllViews();
+        weekTwoLayout.removeAllViews();
+        weekThreeLayout.removeAllViews();
+        weekFourLayout.removeAllViews();
+        weekFiveLayout.removeAllViews();
+        weekSixLayout.removeAllViews();
+
+        initializeDaysWeeks();
+        addDaysinCalendar(defaultButtonParams, cont, metrics);
+
+        int godina;
+        int mjesec;
+
+        if (chosenDateMonth == 11) {
+            mjesec = 0;
+            godina = chosenDateYear + 1;
+        }
+        else{
+            mjesec = chosenDateMonth +1;
+            godina = chosenDateYear;
+        }
+
+        currentMonth.setText(ENG_MONTH_NAMES[mjesec]);
+        initCalendarWithDate(godina, mjesec, 1, cont);
+
     }
 
     private void onPrevoiusClick(View v) {
-        Toast.makeText(cont,"Prvoius", Toast.LENGTH_SHORT).show();
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+
+        calendar = Calendar.getInstance();
+        View view = LayoutInflater.from(cont).inflate(R.layout.simple_calendar, this, true);
+
+        weekOneLayout = (LinearLayout) view.findViewById(R.id.calendar_week_1);
+        weekTwoLayout = (LinearLayout) view.findViewById(R.id.calendar_week_2);
+        weekThreeLayout = (LinearLayout) view.findViewById(R.id.calendar_week_3);
+        weekFourLayout = (LinearLayout) view.findViewById(R.id.calendar_week_4);
+        weekFiveLayout = (LinearLayout) view.findViewById(R.id.calendar_week_5);
+        weekSixLayout = (LinearLayout) view.findViewById(R.id.calendar_week_6);
+
+        weekOneLayout.removeAllViews();
+        weekTwoLayout.removeAllViews();
+        weekThreeLayout.removeAllViews();
+        weekFourLayout.removeAllViews();
+        weekFiveLayout.removeAllViews();
+        weekSixLayout.removeAllViews();
+
+        initializeDaysWeeks();
+        addDaysinCalendar(defaultButtonParams, cont, metrics);
+
+        int godina;
+        int mjesec;
+        int dan = 1;
+
+        if (chosenDateMonth == 0) {
+            mjesec = 11;
+            godina = chosenDateYear - 1;
+        }
+        else{
+            mjesec = chosenDateMonth - 1;
+            godina = chosenDateYear;
+        }
+
+        //currentDate.setText("");
+        currentMonth.setText(ENG_MONTH_NAMES[mjesec]);
+        initCalendarWithDate(godina, mjesec, 1, cont);
     }
 
     private void initializeDaysWeeks() {
@@ -177,7 +246,6 @@ public class SimpleCalendar extends LinearLayout {
 
         calendar.set(year, month, 1);
         int firstDayOfCurrentMonth = calendar.get(Calendar.DAY_OF_WEEK);
-
         calendar.set(year, month, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 
         int dayNumber = 1;
@@ -189,12 +257,11 @@ public class SimpleCalendar extends LinearLayout {
             indexOfDayAfterLastDayOfMonth = daysLeftInFirstWeek + daysInCurrentMonth;
             for (int i = firstDayOfCurrentMonth; i < firstDayOfCurrentMonth + daysInCurrentMonth; ++i) {
                 if (currentDateMonth == chosenDateMonth && currentDateYear == chosenDateYear && dayNumber == currentDateDay) {
-                    // days[i].setBackgroundColor(getResources().getColor(R.color.pink)); /*Necemo mijenjati pozadinu nego samo boldati text*/
                     days[i].setTypeface(null, Typeface.BOLD);
                     days[i].setTextColor(Color.BLACK);
                 }
 
-                    // oznacavamo datume na koje imamo planove
+                // oznacavamo datume na koje imamo planove
                 days[i].setTextColor(Color.BLACK);
                 days[i].setBackgroundColor(Color.TRANSPARENT);
                 String filter = "" + String.valueOf(year);
@@ -257,15 +324,8 @@ public class SimpleCalendar extends LinearLayout {
             daysLeftInFirstWeek = 8;
             indexOfDayAfterLastDayOfMonth = daysLeftInFirstWeek + daysInCurrentMonth;
             for (int i = 8; i < 8 + daysInCurrentMonth; ++i) {
-                if (currentDateMonth == chosenDateMonth
-                        && currentDateYear == chosenDateYear
-                        && dayNumber == currentDateDay) {
-                    days[i].setBackgroundColor(getResources().getColor(R.color.pink));
-                    days[i].setTextColor(Color.WHITE);
-                } else {
-                    days[i].setTextColor(Color.BLACK);
-                    days[i].setBackgroundColor(Color.TRANSPARENT);
-                }
+                days[i].setTextColor(Color.BLACK);
+                days[i].setBackgroundColor(Color.TRANSPARENT);
 
                 int[] dateArr = new int[3];
                 dateArr[0] = dayNumber;
@@ -332,25 +392,13 @@ public class SimpleCalendar extends LinearLayout {
             int[] dateArr = new int[3];
 
             if (chosenDateMonth < 11) {
-                if (currentDateMonth == chosenDateMonth + 1
-                        && currentDateYear == chosenDateYear
-                        && nextMonthDaysCounter == currentDateDay) {
-                    days[i].setBackgroundColor(getResources().getColor(R.color.pink));
-                } else {
-                    days[i].setBackgroundColor(Color.TRANSPARENT);
-                }
+                days[i].setBackgroundColor(Color.TRANSPARENT);
 
                 dateArr[0] = nextMonthDaysCounter;
                 dateArr[1] = chosenDateMonth + 1;
                 dateArr[2] = chosenDateYear;
             } else {
-                if (currentDateMonth == 0
-                        && currentDateYear == chosenDateYear + 1
-                        && nextMonthDaysCounter == currentDateDay) {
-                    days[i].setBackgroundColor(getResources().getColor(R.color.pink));
-                } else {
-                    days[i].setBackgroundColor(Color.TRANSPARENT);
-                }
+                days[i].setBackgroundColor(Color.TRANSPARENT);
 
                 dateArr[0] = nextMonthDaysCounter;
                 dateArr[1] = 0;
@@ -372,7 +420,6 @@ public class SimpleCalendar extends LinearLayout {
     }
 
     public void onDayClick(View view) {
-        //Log.e("DAN", "klik na dan");
         mListener.onDayClick(view);
 
         selectedDayButton = (Button) view;
@@ -451,45 +498,6 @@ public class SimpleCalendar extends LinearLayout {
 
         }
 
-
-
-/*
-        if (selectedDayButton != null) {
-            if (chosenDateYear == currentDateYear
-                    && chosenDateMonth == currentDateMonth
-                    && pickedDateDay == currentDateDay) {
-                selectedDayButton.setBackgroundColor(getResources().getColor(R.color.pink));
-                selectedDayButton.setTextColor(Color.WHITE);
-            } else {
-                selectedDayButton.setBackgroundColor(Color.TRANSPARENT);
-                if (selectedDayButton.getCurrentTextColor() != Color.RED) {
-                    selectedDayButton.setTextColor(getResources()
-                            .getColor(R.color.calendar_number));
-                }
-            }
-        }
-
-
-        selectedDayButton = (Button) view;
-        if (selectedDayButton.getTag() != null) {
-            int[] dateArray = (int[]) selectedDayButton.getTag();
-            pickedDateDay = dateArray[0];
-            pickedDateMonth = dateArray[1];
-            pickedDateYear = dateArray[2];
-        }
-
-        if (pickedDateYear == currentDateYear
-                && pickedDateMonth == currentDateMonth
-                && pickedDateDay == currentDateDay) {
-            selectedDayButton.setBackgroundColor(getResources().getColor(R.color.pink));
-            selectedDayButton.setTextColor(Color.WHITE);
-        } else {
-            selectedDayButton.setBackgroundColor(getResources().getColor(R.color.grey));
-            if (selectedDayButton.getCurrentTextColor() != Color.RED) {
-                selectedDayButton.setTextColor(Color.WHITE);
-            }
-        }
-*/
     }
 
     private void addDaysinCalendar(LayoutParams buttonParams, Context context,

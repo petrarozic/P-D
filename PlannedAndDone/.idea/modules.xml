@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+
       <module fileurl="file:///var/cache/fscache/home/student1/sapuzar/pland/PlannedAndDone/PlannedAndDone.iml" filepath="/var/cache/fscache/home/student1/sapuzar/pland/PlannedAndDone/PlannedAndDone.iml" />
       <module fileurl="file:///var/cache/fscache/home/student1/sapuzar/pland/PlannedAndDone/app/app.iml" filepath="/var/cache/fscache/home/student1/sapuzar/pland/PlannedAndDone/app/app.iml" />
+
+      <module fileurl="file:///.home/student1/perozic/p-d/PlannedAndDone/PlannedAndDone.iml" filepath="/.home/student1/perozic/p-d/PlannedAndDone/PlannedAndDone.iml" />
+      <module fileurl="file:///.home/student1/perozic/p-d/PlannedAndDone/app/app.iml" filepath="/.home/student1/perozic/p-d/PlannedAndDone/app/app.iml" />
+
     </modules>
   </component>
 </project>
