@@ -96,15 +96,12 @@ public class SimpleCalendar extends LinearLayout {
                 onPrevoiusClick(v);
             }
         });
-
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onNextClick(v);
             }
         });
-
-
 
         calendar = Calendar.getInstance();
 
@@ -143,12 +140,419 @@ public class SimpleCalendar extends LinearLayout {
     }
 
     private void onNextClick(View v) {
-
         Toast.makeText(cont,"Next", Toast.LENGTH_SHORT).show();
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+
+        calendar = Calendar.getInstance();
+        View view = LayoutInflater.from(cont).inflate(R.layout.simple_calendar, this, true);
+
+        weekOneLayout = (LinearLayout) view.findViewById(R.id.calendar_week_1);
+        weekTwoLayout = (LinearLayout) view.findViewById(R.id.calendar_week_2);
+        weekThreeLayout = (LinearLayout) view.findViewById(R.id.calendar_week_3);
+        weekFourLayout = (LinearLayout) view.findViewById(R.id.calendar_week_4);
+        weekFiveLayout = (LinearLayout) view.findViewById(R.id.calendar_week_5);
+        weekSixLayout = (LinearLayout) view.findViewById(R.id.calendar_week_6);
+
+        weekOneLayout.removeAllViews();
+        weekTwoLayout.removeAllViews();
+        weekThreeLayout.removeAllViews();
+        weekFourLayout.removeAllViews();
+        weekFiveLayout.removeAllViews();
+        weekSixLayout.removeAllViews();
+
+        initializeDaysWeeks();
+        addDaysinCalendar(defaultButtonParams, cont, metrics);
+
+        int godina;
+        int mjesec;
+        int dan = 1;
+
+        if (chosenDateMonth == 11) {
+            mjesec = 0;
+            godina = chosenDateYear + 1;
+        }
+        else{
+            mjesec = chosenDateMonth +1;
+            godina = chosenDateYear;
+        }
+
+        //currentDate.setText("");
+        currentMonth.setText(ENG_MONTH_NAMES[mjesec]);
+
+        calendar.set(godina, mjesec, dan);
+
+        int daysInNextMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        chosenDateYear = godina;
+        chosenDateMonth = mjesec;
+        chosenDateDay = dan;
+
+        int firstDayOfNextMonth = calendar.get(Calendar.DAY_OF_WEEK);
+        calendar.set(godina, mjesec, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        int dayNumber = 1;
+        int daysLeftInFirstWeek = 0;
+        int indexOfDayAfterLastDayOfMonth = 0;
+
+
+        if (firstDayOfNextMonth!= 1) {
+            daysLeftInFirstWeek = firstDayOfNextMonth;
+            indexOfDayAfterLastDayOfMonth = daysLeftInFirstWeek + daysInNextMonth;
+            for (int i = firstDayOfNextMonth; i < firstDayOfNextMonth + daysInNextMonth; ++i) {
+                // oznacavamo datume na koje imamo planove
+                days[i].setTextColor(Color.BLACK);
+                days[i].setBackgroundColor(Color.TRANSPARENT);
+                String filter = "" + String.valueOf(godina);
+                if ((mjesec + 1) < 10)
+                    filter += "0" + String.valueOf(mjesec + 1);
+                else
+                    filter += String.valueOf(mjesec + 1);
+                if (dayNumber < 10)
+                    filter += "0" + String.valueOf(dayNumber);
+                else
+                    filter += String.valueOf(dayNumber);
+
+                //ima li u bazi zadataka.. dohvati dan
+                Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+                Cursor c = cont.getContentResolver().query(table,
+                        new String[]{DataBase.TASK_TIME, DataBase.TASK_NAME, DataBase.TASK_PRIORITY},
+                        DataBase.TASK_TIME + " LIKE '" + filter + "%'", null, "time DESC");
+
+
+                if (c.moveToFirst()) {
+                    int prioritet = 4;
+                    do {
+                        if (((c.getInt(2) < prioritet) && (c.getInt(2) != 0)) || (c.getInt(2) == 1))
+                            prioritet = c.getInt(2);
+                    } while (c.moveToNext() && (prioritet != 1));
+
+                    switch (prioritet) {
+                        case 1:
+                            days[i].setBackgroundColor(Color.rgb(255, 102, 102));
+                            break;
+                        case 2:
+                            days[i].setBackgroundColor(Color.rgb(255, 224, 102));
+                            break;
+                        case 3:
+                            days[i].setBackgroundColor(Color.parseColor("#7ac442"));
+                            break;
+                        default:
+                            days[i].setBackgroundColor(Color.rgb(166, 166, 166));
+                            break;
+                    }
+                }
+
+                int[] dateArr = new int[3];
+                dateArr[0] = dayNumber;
+                dateArr[1] = chosenDateMonth;
+                dateArr[2] = chosenDateYear;
+                days[i].setTag(dateArr);
+                days[i].setText(String.valueOf(dayNumber));
+
+                days[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onDayClick(v);
+                    }
+                });
+                ++dayNumber;
+            }
+
+        }
+
+        if (mjesec > 0)
+            calendar.set(godina, mjesec - 1, 1);
+        else
+            calendar.set(godina - 1, 11, 1);
+        int daysInPreviousMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        for (int i = daysLeftInFirstWeek - 1; i >= 0; --i) {
+            int[] dateArr = new int[3];
+
+            if (chosenDateMonth > 0) {
+                if (currentDateMonth == chosenDateMonth - 1
+                        && currentDateYear == chosenDateYear
+                        && daysInPreviousMonth == currentDateDay) {
+                } else {
+                    days[i].setBackgroundColor(Color.TRANSPARENT);
+                }
+
+                dateArr[0] = daysInPreviousMonth;
+                dateArr[1] = chosenDateMonth - 1;
+                dateArr[2] = chosenDateYear;
+            } else {
+                if (currentDateMonth == 11
+                        && currentDateYear == chosenDateYear - 1
+                        && daysInPreviousMonth == currentDateDay) {
+                } else {
+                    days[i].setBackgroundColor(Color.TRANSPARENT);
+                }
+
+                dateArr[0] = daysInPreviousMonth;
+                dateArr[1] = 11;
+                dateArr[2] = chosenDateYear - 1;
+            }
+
+            days[i].setTag(dateArr);
+            days[i].setText(String.valueOf(daysInPreviousMonth--));
+            days[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onDayClick(v);
+                }
+            });
+        }
+
+        int nextMonthDaysCounter = 1;
+        for (int i = indexOfDayAfterLastDayOfMonth; i < days.length; ++i) {
+            int[] dateArr = new int[3];
+
+            if (chosenDateMonth < 11) {
+                if (currentDateMonth == chosenDateMonth + 1
+                        && currentDateYear == chosenDateYear
+                        && nextMonthDaysCounter == currentDateDay) {
+                    days[i].setBackgroundColor(getResources().getColor(R.color.pink));
+                } else {
+                    days[i].setBackgroundColor(Color.TRANSPARENT);
+                }
+
+                dateArr[0] = nextMonthDaysCounter;
+                dateArr[1] = chosenDateMonth + 1;
+                dateArr[2] = chosenDateYear;
+            } else {
+                if (currentDateMonth == 0
+                        && currentDateYear == chosenDateYear + 1
+                        && nextMonthDaysCounter == currentDateDay) {
+                    days[i].setBackgroundColor(getResources().getColor(R.color.pink));
+                } else {
+                    days[i].setBackgroundColor(Color.TRANSPARENT);
+                }
+
+                dateArr[0] = nextMonthDaysCounter;
+                dateArr[1] = 0;
+                dateArr[2] = chosenDateYear + 1;
+            }
+
+            days[i].setTag(dateArr);
+            days[i].setTextColor(Color.parseColor(CUSTOM_GREY));
+            days[i].setText(String.valueOf(nextMonthDaysCounter++));
+            days[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onDayClick(v);
+                }
+            });
+        }
+        calendar.set(chosenDateYear, chosenDateMonth, chosenDateDay);
+
     }
 
     private void onPrevoiusClick(View v) {
         Toast.makeText(cont,"Prvoius", Toast.LENGTH_SHORT).show();
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+
+        calendar = Calendar.getInstance();
+        View view = LayoutInflater.from(cont).inflate(R.layout.simple_calendar, this, true);
+
+        weekOneLayout = (LinearLayout) view.findViewById(R.id.calendar_week_1);
+        weekTwoLayout = (LinearLayout) view.findViewById(R.id.calendar_week_2);
+        weekThreeLayout = (LinearLayout) view.findViewById(R.id.calendar_week_3);
+        weekFourLayout = (LinearLayout) view.findViewById(R.id.calendar_week_4);
+        weekFiveLayout = (LinearLayout) view.findViewById(R.id.calendar_week_5);
+        weekSixLayout = (LinearLayout) view.findViewById(R.id.calendar_week_6);
+
+        weekOneLayout.removeAllViews();
+        weekTwoLayout.removeAllViews();
+        weekThreeLayout.removeAllViews();
+        weekFourLayout.removeAllViews();
+        weekFiveLayout.removeAllViews();
+        weekSixLayout.removeAllViews();
+
+        initializeDaysWeeks();
+        addDaysinCalendar(defaultButtonParams, cont, metrics);
+
+        int godina;
+        int mjesec;
+        int dan = 1;
+
+        if (chosenDateMonth == 0) {
+            mjesec = 11;
+            godina = chosenDateYear - 1;
+        }
+        else{
+            mjesec = chosenDateMonth - 1;
+            godina = chosenDateYear;
+        }
+
+        //currentDate.setText("");
+        currentMonth.setText(ENG_MONTH_NAMES[mjesec]);
+
+        calendar.set(godina, mjesec, dan);
+
+        int daysInNextMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        chosenDateYear = godina;
+        chosenDateMonth = mjesec;
+        chosenDateDay = dan;
+
+        int firstDayOfNextMonth = calendar.get(Calendar.DAY_OF_WEEK);
+        calendar.set(godina, mjesec, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        int dayNumber = 1;
+        int daysLeftInFirstWeek = 0;
+        int indexOfDayAfterLastDayOfMonth = 0;
+
+
+        if (firstDayOfNextMonth!= 1) {
+            daysLeftInFirstWeek = firstDayOfNextMonth;
+            indexOfDayAfterLastDayOfMonth = daysLeftInFirstWeek + daysInNextMonth;
+            for (int i = firstDayOfNextMonth; i < firstDayOfNextMonth + daysInNextMonth; ++i) {
+                // oznacavamo datume na koje imamo planove
+                days[i].setTextColor(Color.BLACK);
+                days[i].setBackgroundColor(Color.TRANSPARENT);
+                String filter = "" + String.valueOf(godina);
+                if ((mjesec + 1) < 10)
+                    filter += "0" + String.valueOf(mjesec + 1);
+                else
+                    filter += String.valueOf(mjesec + 1);
+                if (dayNumber < 10)
+                    filter += "0" + String.valueOf(dayNumber);
+                else
+                    filter += String.valueOf(dayNumber);
+
+                //ima li u bazi zadataka.. dohvati dan
+                Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+                Cursor c = cont.getContentResolver().query(table,
+                        new String[]{DataBase.TASK_TIME, DataBase.TASK_NAME, DataBase.TASK_PRIORITY},
+                        DataBase.TASK_TIME + " LIKE '" + filter + "%'", null, "time DESC");
+
+
+                if (c.moveToFirst()) {
+                    int prioritet = 4;
+                    do {
+                        if (((c.getInt(2) < prioritet) && (c.getInt(2) != 0)) || (c.getInt(2) == 1))
+                            prioritet = c.getInt(2);
+                    } while (c.moveToNext() && (prioritet != 1));
+
+                    switch (prioritet) {
+                        case 1:
+                            days[i].setBackgroundColor(Color.rgb(255, 102, 102));
+                            break;
+                        case 2:
+                            days[i].setBackgroundColor(Color.rgb(255, 224, 102));
+                            break;
+                        case 3:
+                            days[i].setBackgroundColor(Color.parseColor("#7ac442"));
+                            break;
+                        default:
+                            days[i].setBackgroundColor(Color.rgb(166, 166, 166));
+                            break;
+                    }
+                }
+
+                int[] dateArr = new int[3];
+                dateArr[0] = dayNumber;
+                dateArr[1] = chosenDateMonth;
+                dateArr[2] = chosenDateYear;
+                days[i].setTag(dateArr);
+                days[i].setText(String.valueOf(dayNumber));
+
+                days[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onDayClick(v);
+                    }
+                });
+                ++dayNumber;
+            }
+
+        }
+
+        if (mjesec > 0)
+            calendar.set(godina, mjesec - 1, 1);
+        else
+            calendar.set(godina - 1, 11, 1);
+        int daysInPreviousMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        for (int i = daysLeftInFirstWeek - 1; i >= 0; --i) {
+            int[] dateArr = new int[3];
+
+            if (chosenDateMonth > 0) {
+                if (currentDateMonth == chosenDateMonth - 1
+                        && currentDateYear == chosenDateYear
+                        && daysInPreviousMonth == currentDateDay) {
+                } else {
+                    days[i].setBackgroundColor(Color.TRANSPARENT);
+                }
+
+                dateArr[0] = daysInPreviousMonth;
+                dateArr[1] = chosenDateMonth - 1;
+                dateArr[2] = chosenDateYear;
+            } else {
+                if (currentDateMonth == 11
+                        && currentDateYear == chosenDateYear - 1
+                        && daysInPreviousMonth == currentDateDay) {
+                } else {
+                    days[i].setBackgroundColor(Color.TRANSPARENT);
+                }
+
+                dateArr[0] = daysInPreviousMonth;
+                dateArr[1] = 11;
+                dateArr[2] = chosenDateYear - 1;
+            }
+
+            days[i].setTag(dateArr);
+            days[i].setText(String.valueOf(daysInPreviousMonth--));
+            days[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onDayClick(v);
+                }
+            });
+        }
+
+        int nextMonthDaysCounter = 1;
+        for (int i = indexOfDayAfterLastDayOfMonth; i < days.length; ++i) {
+            int[] dateArr = new int[3];
+
+            if (chosenDateMonth < 11) {
+                if (currentDateMonth == chosenDateMonth + 1
+                        && currentDateYear == chosenDateYear
+                        && nextMonthDaysCounter == currentDateDay) {
+                    days[i].setBackgroundColor(getResources().getColor(R.color.pink));
+                } else {
+                    days[i].setBackgroundColor(Color.TRANSPARENT);
+                }
+
+                dateArr[0] = nextMonthDaysCounter;
+                dateArr[1] = chosenDateMonth + 1;
+                dateArr[2] = chosenDateYear;
+            } else {
+                if (currentDateMonth == 0
+                        && currentDateYear == chosenDateYear + 1
+                        && nextMonthDaysCounter == currentDateDay) {
+                    days[i].setBackgroundColor(getResources().getColor(R.color.pink));
+                } else {
+                    days[i].setBackgroundColor(Color.TRANSPARENT);
+                }
+
+                dateArr[0] = nextMonthDaysCounter;
+                dateArr[1] = 0;
+                dateArr[2] = chosenDateYear + 1;
+            }
+
+            days[i].setTag(dateArr);
+            days[i].setTextColor(Color.parseColor(CUSTOM_GREY));
+            days[i].setText(String.valueOf(nextMonthDaysCounter++));
+            days[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onDayClick(v);
+                }
+            });
+        }
+        calendar.set(chosenDateYear, chosenDateMonth, chosenDateDay);
+
     }
 
     private void initializeDaysWeeks() {
@@ -164,6 +568,7 @@ public class SimpleCalendar extends LinearLayout {
     }
 
     private void initCalendarWithDate(int year, int month, int day, Context context) {
+        Log.e("KALENDAR", "kreiram za " + Integer.toString(month));
         if (calendar == null)
             calendar = Calendar.getInstance();
         calendar.set(year, month, day);
@@ -443,45 +848,6 @@ public class SimpleCalendar extends LinearLayout {
 
         }
 
-
-
-/*
-        if (selectedDayButton != null) {
-            if (chosenDateYear == currentDateYear
-                    && chosenDateMonth == currentDateMonth
-                    && pickedDateDay == currentDateDay) {
-                selectedDayButton.setBackgroundColor(getResources().getColor(R.color.pink));
-                selectedDayButton.setTextColor(Color.WHITE);
-            } else {
-                selectedDayButton.setBackgroundColor(Color.TRANSPARENT);
-                if (selectedDayButton.getCurrentTextColor() != Color.RED) {
-                    selectedDayButton.setTextColor(getResources()
-                            .getColor(R.color.calendar_number));
-                }
-            }
-        }
-
-
-        selectedDayButton = (Button) view;
-        if (selectedDayButton.getTag() != null) {
-            int[] dateArray = (int[]) selectedDayButton.getTag();
-            pickedDateDay = dateArray[0];
-            pickedDateMonth = dateArray[1];
-            pickedDateYear = dateArray[2];
-        }
-
-        if (pickedDateYear == currentDateYear
-                && pickedDateMonth == currentDateMonth
-                && pickedDateDay == currentDateDay) {
-            selectedDayButton.setBackgroundColor(getResources().getColor(R.color.pink));
-            selectedDayButton.setTextColor(Color.WHITE);
-        } else {
-            selectedDayButton.setBackgroundColor(getResources().getColor(R.color.grey));
-            if (selectedDayButton.getCurrentTextColor() != Color.RED) {
-                selectedDayButton.setTextColor(Color.WHITE);
-            }
-        }
-*/
     }
 
     private void addDaysinCalendar(LayoutParams buttonParams, Context context,
