@@ -92,6 +92,7 @@ public class NotificationBuilder  extends BroadcastReceiver {
                     .setContentIntent(pendingIntent)
                     .setVibrate(vibrate)
                     .setChannelId(NOTIFICATION_CHANNEL_ID)
+                    .setAutoCancel(true)
                     .build();
             }else{
             notif1 = new Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
@@ -103,6 +104,7 @@ public class NotificationBuilder  extends BroadcastReceiver {
                     .setContentIntent(pendingIntent)
                     .setVibrate(vibrate)
                     .setChannelId(NOTIFICATION_CHANNEL_ID)
+                    .setAutoCancel(true)
                     .build();
 
         }
