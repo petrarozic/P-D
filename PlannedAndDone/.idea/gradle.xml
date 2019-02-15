@@ -8,6 +8,10 @@
         <option name="modules">
           <set>
 
+            <option value="/var/cache/fscache/home/student1/sapuzar/pland/PlannedAndDone" />
+            <option value="/var/cache/fscache/home/student1/sapuzar/pland/PlannedAndDone/app" />
+
+
             <option value="/.home/student1/perozic/p-d/PlannedAndDone" />
             <option value="/.home/student1/perozic/p-d/PlannedAndDone/app" />
 
