@@ -189,54 +189,53 @@ public class SimpleCalendar extends LinearLayout {
             for (int i = firstDayOfCurrentMonth; i < firstDayOfCurrentMonth + daysInCurrentMonth; ++i) {
                 if (currentDateMonth == chosenDateMonth && currentDateYear == chosenDateYear && dayNumber == currentDateDay) {
                     // days[i].setBackgroundColor(getResources().getColor(R.color.pink)); /*Necemo mijenjati pozadinu nego samo boldati text*/
-                    days[i].setBackgroundColor(Color.TRANSPARENT);
                     days[i].setTypeface(null, Typeface.BOLD);
                     days[i].setTextColor(Color.BLACK);
-                } else {
+                }
 
                     // oznacavamo datume na koje imamo planove
-                    days[i].setTextColor(Color.BLACK);
-                    days[i].setBackgroundColor(Color.TRANSPARENT);
-                    String filter = "" + String.valueOf(year);
-                    if ((month+1) < 10)
-                        filter += "0" + String.valueOf(month+1);
-                    else
-                        filter += String.valueOf(month+1);
-                    if ( dayNumber < 10)
-                        filter += "0" + String.valueOf(dayNumber);
-                    else
-                        filter += String.valueOf(dayNumber);
+                days[i].setTextColor(Color.BLACK);
+                days[i].setBackgroundColor(Color.TRANSPARENT);
+                String filter = "" + String.valueOf(year);
+                if ((month+1) < 10)
+                    filter += "0" + String.valueOf(month+1);
+                else
+                    filter += String.valueOf(month+1);
+                if ( dayNumber < 10)
+                    filter += "0" + String.valueOf(dayNumber);
+                else
+                    filter += String.valueOf(dayNumber);
 
-                    //ima li u bazi zadataka.. dohvati dan
-                    Uri table = Uri.parse("content://hr.math.provider.contprov/task");
-                    Cursor c = context.getContentResolver().query(table,
-                            new String[]{DataBase.TASK_TIME,DataBase.TASK_NAME,DataBase.TASK_PRIORITY},
-                            DataBase.TASK_TIME + " LIKE '" + filter +"%'", null, "time DESC");
+                //ima li u bazi zadataka.. dohvati dan
+                Uri table = Uri.parse("content://hr.math.provider.contprov/task");
+                Cursor c = context.getContentResolver().query(table,
+                        new String[]{DataBase.TASK_TIME,DataBase.TASK_NAME,DataBase.TASK_PRIORITY},
+                        DataBase.TASK_TIME + " LIKE '" + filter +"%'", null, "time DESC");
 
 
-                    if(c.moveToFirst()) {
-                        int prioritet = 4;
-                        do{
-                            if (((c.getInt(2) < prioritet) && (c.getInt(2) != 0))|| (c.getInt(2) == 1 ))
-                                prioritet = c.getInt(2);
-                        }while(c.moveToNext() && (prioritet != 1));
+                if(c.moveToFirst()) {
+                    int prioritet = 4;
+                    do{
+                        if (((c.getInt(2) < prioritet) && (c.getInt(2) != 0))|| (c.getInt(2) == 1 ))
+                            prioritet = c.getInt(2);
+                    }while(c.moveToNext() && (prioritet != 1));
 
-                        switch (prioritet){
-                            case 1:
-                                days[i].setBackgroundColor(Color.rgb(255, 102, 102));
-                                break;
-                            case 2:
-                                days[i].setBackgroundColor(Color.rgb(255, 224, 102));
-                                break;
-                            case 3:
-                                days[i].setBackgroundColor(Color.parseColor("#7ac442"));
-                                break;
-                            default:
-                                days[i].setBackgroundColor(Color.rgb(166, 166, 166));
-                                break;
-                        }
+                    switch (prioritet){
+                        case 1:
+                            days[i].setBackgroundColor(Color.rgb(255, 102, 102));
+                            break;
+                        case 2:
+                            days[i].setBackgroundColor(Color.rgb(255, 224, 102));
+                            break;
+                        case 3:
+                            days[i].setBackgroundColor(Color.parseColor("#7ac442"));
+                            break;
+                        default:
+                            days[i].setBackgroundColor(Color.rgb(166, 166, 166));
+                            break;
                     }
                 }
+
 
                 int[] dateArr = new int[3];
                 dateArr[0] = dayNumber;

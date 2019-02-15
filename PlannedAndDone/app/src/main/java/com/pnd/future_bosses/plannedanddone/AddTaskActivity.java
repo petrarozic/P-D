@@ -98,6 +98,7 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
                                         timePickerDialog.show();
                                     }
                                 }, year, month, day);
+                        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                         datePickerDialog.show();
                     }
                 });
@@ -131,6 +132,7 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
                                         timePickerDialog.show();
                                     }
                                 }, year, month, day);
+                        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                         datePickerDialog.show();
                     }
                 });
@@ -152,9 +154,11 @@ public class AddTaskActivity extends AppCompatActivity implements TimePickerDial
                 name1 = c1.getString(0);
                 planned1 = c1.getString(1);
                 deadline1 = c1.getString(2);
-                String d1, p1;
-                p1 = planned1.substring(6,8) + "/" + planned1.substring(4,6) + "/" + planned1.substring(0,4) + ", " + planned1.substring(8,10) + ":" + planned1.substring(10,12);
-                d1 = deadline1.substring(6,8) + "/" + deadline1.substring(4,6) + "/" + deadline1.substring(0,4) + ", " + deadline1.substring(8,10) + ":" + deadline1.substring(10,12);
+                String d1 = "", p1 = "";
+                if (!planned1.equals(""))
+                    p1 = planned1.substring(6,8) + "/" + planned1.substring(4,6) + "/" + planned1.substring(0,4) + ", " + planned1.substring(8,10) + ":" + planned1.substring(10,12);
+                if (!deadline1.equals(""))
+                    d1 = deadline1.substring(6,8) + "/" + deadline1.substring(4,6) + "/" + deadline1.substring(0,4) + ", " + deadline1.substring(8,10) + ":" + deadline1.substring(10,12);
 
                 switch (c1.getInt(3))
                 {
