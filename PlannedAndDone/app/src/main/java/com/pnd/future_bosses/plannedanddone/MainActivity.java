@@ -312,6 +312,7 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (c.getInt(c.getColumnIndex(DataBase.TASK_DONE))) {
                     case 1:
+                        editButton.setImageResource(R.drawable.edit_icon1);
                         editButton.setEnabled(false);
                         check.setChecked(true);
                         doneTasks.addView(taskLayout);
