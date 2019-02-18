@@ -51,17 +51,18 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="5">
+        android:layout_weight="5"
+        android:layout_marginTop="3dp">
 
         <TextView
             android:id="@+id/taskName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Task"
-            android:textSize="25dp"
+            android:textSize="23dp"
             android:textColor="@android:color/black"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="8dp" />
@@ -72,22 +73,24 @@
             android:layout_height="wrap_content"
             android:text="Planned: "
             app:layout_constraintTop_toBottomOf="@+id/taskName"
-            android:layout_marginTop="2dp"
-            android:layout_marginLeft="35dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginStart="35dp"
-            android:textColor="@color/calendar_number"/>
+            android:layout_marginStart="8dp"
+            android:textColor="@color/calendar_number"
+            android:textSize="13dp"/>
 
         <TextView
             android:id="@+id/taskDeadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Deadline: "
-            android:layout_marginLeft="35dp"
+            android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/taskDate"
-            android:layout_marginStart="35dp"
-            android:textColor="@color/calendar_number"/>
+            android:layout_marginStart="8dp"
+            android:textColor="@color/calendar_number"
+            android:textSize="13dp"/>
 
     </android.support.constraint.ConstraintLayout>
 
@@ -106,7 +109,7 @@
             android:layout_alignParentTop="true"
             app:srcCompat="@drawable/sivi"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent"
