@@ -1,149 +1,37 @@
-// Kako koristiti funkcije iz ContentProvider - kod nas sve pozive TaskProvidera zamijeniti DataBase
+Planned&Done
 
+Planned&Done je aplikacija kojom korisnik organizira vrijeme i raspoređuje zadatke. Aplikacija
+omogućuje bilježenje, brisanje i editiranje zadataka. Zadacima je omogućeno zadavanje planiranog
+vremena izvršavanja, krajnjeg vremenskog roka te atributa prioriteta i kategorije.
+Pri pokretanju aplikacije prikazuju se zadaci, koje je korisnik dodao, u dvije liste: lista planiranih
+i lista obavljenih zadataka. Za svaki zadatak prikazani su atributi prioriteta (obojeni uskličnik: siva –
+neodređen prioritet, zelena – najniži prioritet, žuta – srednji prioritet, crvena – najviši prioritet), datumi
+planiranog izvršavanja, te datum krajnjeg roka.
+Dužim klikom na zadatak te potvrdom u dijaloškom okviru omogućeno je brisanje zadatka.
+Pored prikazanog zadatka nalazi se ikona za uređivanje svojstava tog zadatka; uređivanje je onemogućeno
+za obavljene zadatke. Pored svakog zadataka nalazi se checkbox kojim označavamo da je zadatak
+obavljen. Klikom na njega zadatak se automatski premješta u odgovarajuću listu.
+Klikom na gumb koji se nalazi u donjem desnom rubu ekrana omogućeno je dodavanje novog
+zadatka. Prilikom dodavanja zadataka obavezno je unijeti ime, dok su ostali atributi opcionalni.
+Omogućeno je sortiranje i filtriranje zadataka. Sortiranje je omogućeno prema sljedećim
+kategorijama: datumu planiranog vremena izvršavanja, datumu krajnjeg roka te prema prioritetu, u
+uzlaznom ili silaznom poretku. Filtriranje je omogućeno prema sljedećim kriterijima: prioritetu, kategoriji
+te vremenu planiranja i krajnjem roku.
+U padajućem izborniku su sljedeće opcije: kalendar, pomodoro tehnika, notifikacije,
+istovremeno brisanje svih završenih zadataka, ažuriranje kategorija i izvoz u pdf.
+Na kalendaru su označeni datumi na koje korisnik planira izvršiti zadatke te su obojeni prema
+najvećem prioritetu zadatka u tom danu. Klikom na određeni datum prikazuju se svi zadaci planirani za
+taj dan.
+Opcija Pomodoro omogućuje korisniku praćenje izvršavanja zadatka pomoću Pomodoro tehnike,
+gumbima Pomodoro, kratka pauza i duga pauza te start, pauziranje trenutnog ciklusa te restartanje
+trenutnog ciklusa.
+Omogućeno je paljenje i gašenje obavijesti. Obavijesti stižu svaki dan u 9 ujutro obavještavajući
+korisnika ima li ili nema planiranih zadataka za sljedeći dan.
+Omogućeno je ažuriranje kategorija: dužim pritiskom na kategoriju nudi se mogućnost brisanja,
+također je moguće dodati novu kategoriju.
+Listu zadataka s početnog ekrana moguće je izvesti u PDF.
 
-
-package com.example.sapuzar.providerproba;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
-import android.support.v4.content.CursorLoader;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.EditText;
-import android.widget.Toast;
-
-public class TaskActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task);
-
-
-        // Unos
-        ContentValues values = new ContentValues();
-        values.put("name", "zad1");
-
-        Uri uri = getContentResolver().insert(
-                Uri.parse(
-                        "content://hr.math.provider.contprov/task"),
-                values);
-
-        ContentValues values1 = new ContentValues();
-        values1.put("name", "zad2");
-        values1.put("time", "");
-        values1.put("deadline", "");
-        values1.put("priority", 0);
-        values1.put("category", 0);
-        values1.put("done", 0);
-
-        Uri uri2 = getContentResolver().insert(
-                Uri.parse(
-                        "content://hr.math.provider.contprov/task"),
-                values1);
-
-        Uri table = Uri.parse(
-                "content://hr.math.provider.contprov/task");
-
-        // Ispis
-        Cursor c;
-        if (android.os.Build.VERSION.SDK_INT <11) {
-            //---before Honeycomb---
-            c = managedQuery(table, null, null, null, null);
-        } else {
-            //---Honeycomb and later---
-            CursorLoader cursorLoader = new CursorLoader(
-                    this,
-                    table, null, null, null, null);
-            c = cursorLoader.loadInBackground();
-        }
-
-        if (c.moveToFirst()) {
-            do{
-                Toast.makeText(this,
-                        c.getString(c.getColumnIndex(TaskProvider.TASK_ID)) + ", " +
-                                c.getString(c.getColumnIndex(TaskProvider.TASK_NAME)),
-                        Toast.LENGTH_SHORT).show();
-            } while (c.moveToNext());
-        }
-
-        // Brisanje
-        String where = TaskProvider.TASK_NAME + " LIKE " + "'zad1'";
-
-        int count = getContentResolver().delete(table, where, null);
-        Toast.makeText(this, "Izbrisano je " + count + " zadataka.", Toast.LENGTH_SHORT).show();
-
-        // Ispis
-
-        if (android.os.Build.VERSION.SDK_INT <11) {
-            //---before Honeycomb---
-            c = managedQuery(table, null, null, null, null);
-        } else {
-            //---Honeycomb and later---
-            CursorLoader cursorLoader = new CursorLoader(
-                    this,
-                    table, null, null, null, null);
-            c = cursorLoader.loadInBackground();
-        }
-
-        if (c.moveToFirst()) {
-            do{
-                Toast.makeText(this,
-                        c.getString(c.getColumnIndex(TaskProvider.TASK_ID)) + ", " +
-                                c.getString(c.getColumnIndex(TaskProvider.TASK_NAME)),
-                        Toast.LENGTH_SHORT).show();
-            } while (c.moveToNext());
-        }
-
-        // Update
-        ContentValues values3 = new ContentValues();
-        values3.put("name", "petra");
-        values3.put("time", "podne");
-        where = TaskProvider.TASK_NAME + " LIKE " + "'zad2'";
-        count = getContentResolver().update(table, values3, where, null);
-
-        // Ispis
-
-        if (android.os.Build.VERSION.SDK_INT <11) {
-            //---before Honeycomb---
-            c = managedQuery(table, null, null, null, null);
-        } else {
-            //---Honeycomb and later---
-            CursorLoader cursorLoader = new CursorLoader(
-                    this,
-                    table, null, null, null, null);
-            c = cursorLoader.loadInBackground();
-        }
-
-        if (c.moveToFirst()) {
-            do{
-                Toast.makeText(this,
-                        c.getString(c.getColumnIndex(TaskProvider.TASK_ID)) + ", " +
-                                c.getString(c.getColumnIndex(TaskProvider.TASK_TIME))+ ", " +
-                                c.getString(c.getColumnIndex(TaskProvider.TASK_NAME)),
-                        Toast.LENGTH_SHORT).show();
-            } while (c.moveToNext());
-        }
-
-        // Query
-        where = TaskProvider.TASK_NAME + " LIKE " + "'petra'";
-        c = getContentResolver().query(table,
-                new String[]{TaskProvider.TASK_ID,TaskProvider.TASK_NAME, TaskProvider.TASK_TIME},
-                 where, null, "time DESC");
-
-        Toast.makeText(this, "Query zavrsio",Toast.LENGTH_SHORT).show();
-
-        if (c.moveToFirst()) {
-            do{
-                Toast.makeText(this,
-                        c.getString(c.getColumnIndex(TaskProvider.TASK_ID)) + ", " +
-                                c.getString(c.getColumnIndex(TaskProvider.TASK_TIME))+ ", " +
-                                c.getString(c.getColumnIndex(TaskProvider.TASK_NAME)),
-                        Toast.LENGTH_SHORT).show();
-            } while (c.moveToNext());
-        }
-
-
-    }
-}
+Aplikacija je testirana na uređajima : Samsung galaxy J7, Nexus 5 i Nexus 9.
+Prilikom pokretanja aplikacije u android studiu, ukoliko dođe obavijest o suvišnim modulima, potrebno ih
+je ukloniti.
+Doprinosi članova vidljivi su iz commit-ova na bitbucket projektu, uz međusobno savjetovanje.
