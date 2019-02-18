@@ -20,6 +20,7 @@ public class Pomodoro extends AppCompatActivity {
 
     String ms, ss;
     int timeMin = 25;
+    int timeMinR = 25; //varijabla u kojoj se cuva vrijeme za reset
     int timeSec = 0;
     CountDownTimer ti;
     boolean isPaused = false;
@@ -47,7 +48,7 @@ public class Pomodoro extends AppCompatActivity {
 
         if(ti != null)
             ti.cancel();
-        timeMin = 10;
+        timeMinR=10; timeMin = 10;
         isPaused = false;
         resetColor();
         setTimer();
@@ -59,6 +60,7 @@ public class Pomodoro extends AppCompatActivity {
 
         if(ti != null)
             ti.cancel();
+        timeMinR = 5;
         timeMin = 5;
         isPaused = false;
         resetColor();
@@ -71,6 +73,7 @@ public class Pomodoro extends AppCompatActivity {
 
         if(ti != null)
             ti.cancel();
+        timeMinR = 25;
         timeMin = 25;
         isPaused = false;
         resetColor();
@@ -107,7 +110,10 @@ public class Pomodoro extends AppCompatActivity {
         if(ti != null)
             ti.cancel();
         setTimer();
+        isPaused = false;
         resetColor();
+        timeMin = timeMinR;
+
     }
 
     public void pauseTimer(View view) {
@@ -138,7 +144,7 @@ public class Pomodoro extends AppCompatActivity {
 
         }
         else{
-            timeR = timeMin * 60000;
+            timeR = timeMinR * 60000;
             ImageView im = (ImageView) findViewById( R.id.imageView3 );
             setImage(im);
         }
@@ -187,9 +193,10 @@ public class Pomodoro extends AppCompatActivity {
                 image.setLayoutParams(params);
                 image.setAdjustViewBounds(true);
                 ((LinearLayout) findViewById( R.id.linearLayout7 )).addView(image);
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(500);
             }
         }.start();
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(500);
+
     }
 }
