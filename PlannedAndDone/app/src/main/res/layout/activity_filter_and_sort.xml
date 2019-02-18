@@ -58,7 +58,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/plannedTimeUp"
-                        android:text="Planned time - up"/>
+                        android:text="Planned time - up"
+                        android:checked="true"/>
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
